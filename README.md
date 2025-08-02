@@ -1,4 +1,4 @@
-# ai
+# OpenXI uz
 OpenXI
 меня создал Abdumalikov Asadbek
 
