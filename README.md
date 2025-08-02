@@ -7,7 +7,7 @@ OpenXI
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenXI - Ваш AI-помощник меня создал Abdumalikov Asadbek </title>
+    <title>OpenXI - Ваш AI-помощник меня создал Abdumalikov Asadbek</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
