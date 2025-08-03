@@ -4,13 +4,14 @@ OpenXI
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>XIAI — Математический Ассистент</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XIAI — Математический помощник</title>
   <style>
     body {
+      background: linear-gradient(to right, #a1c4fd, #c2e9fb);
       font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, #dbe9f4, #f7f9fc);
+      text-align: center;
       margin: 0;
       padding: 0;
     }
@@ -18,178 +19,146 @@ OpenXI
     .container {
       max-width: 600px;
       margin: auto;
-      padding: 30px;
-      background-color: white;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      border-radius: 12px;
-      margin-top: 50px;
+      padding: 40px 20px;
+      background: white;
+      margin-top: 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
-    h2 {
-      text-align: center;
+    h1 {
       color: #333;
     }
 
-    form {
-      display: none;
-      margin-top: 20px;
-    }
-
-    label {
-      display: block;
-      margin: 10px 0 5px;
+    .form-section {
+      margin-bottom: 30px;
     }
 
     input[type="text"], input[type="password"] {
-      width: 100%;
       padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 6px;
+      margin: 5px;
+      width: 80%;
+      border-radius: 8px;
       border: 1px solid #ccc;
     }
 
     button {
       padding: 10px 20px;
-      background-color: #0099cc;
-      color: white;
+      margin: 10px;
       border: none;
-      border-radius: 6px;
+      background-color: #4285f4;
+      color: white;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 16px;
     }
 
     button:hover {
-      background-color: #007799;
+      background-color: #3367d6;
     }
 
-    .links {
-      text-align: center;
-      margin-top: 20px;
+    .chat-container {
+      display: none;
+      text-align: left;
     }
 
-    .links a {
-      margin: 0 10px;
-      color: #0099cc;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    #chatBox {
+    .messages {
       height: 300px;
       overflow-y: auto;
       border: 1px solid #ccc;
       padding: 10px;
+      background: #f8f8f8;
+      border-radius: 10px;
       margin-bottom: 10px;
     }
 
-    .user { color: #000099; margin-bottom: 10px; }
-    .bot { color: #009900; margin-bottom: 10px; }
-
-    #chat {
-      display: none;
-    }
+    .user { color: #000099; }
+    .bot  { color: #009900; }
   </style>
 </head>
 <body>
+
   <div class="container">
-    <h2>Добро пожаловать в XIAI</h2>
-
-    <div class="links">
-      <a onclick="showForm('login')">Вход</a> |
-      <a onclick="showForm('register')">Регистрация</a>
-    </div>
-
-    <!-- Вход -->
-    <form id="loginForm">
-      <label>Имя:</label>
-      <input type="text" id="loginName" required>
-      <label>Пароль:</label>
-      <input type="password" id="loginPass" required>
-      <button type="button" onclick="login()">Войти</button>
-    </form>
+    <h1>Добро пожаловать в XIAI</h1>
 
     <!-- Регистрация -->
-    <form id="registerForm">
-      <label>Имя:</label>
-      <input type="text" id="regName" required>
-      <label>Пароль:</label>
-      <input type="password" id="regPass" required>
-      <label><input type="checkbox" id="agree"> Я согласен с условиями</label><br><br>
-      <button type="button" onclick="register()">Зарегистрироваться</button>
-    </form>
+    <div id="authSection">
+      <div class="form-section">
+        <h3>Регистрация</h3>
+        <input type="text" id="regName" placeholder="Введите имя"><br>
+        <input type="password" id="regPass" placeholder="Придумайте пароль"><br>
+        <button onclick="register()">Зарегистрироваться</button>
+      </div>
 
-    <!-- Чат -->
-    <div id="chat">
-      <h3>Чат XIAI</h3>
-      <div id="chatBox"></div>
-      <input type="text" id="userInput" placeholder="Напиши математический вопрос...">
+      <!-- Вход -->
+      <div class="form-section">
+        <h3>Вход</h3>
+        <input type="text" id="loginName" placeholder="Ваше имя"><br>
+        <input type="password" id="loginPass" placeholder="Ваш пароль"><br>
+        <button onclick="login()">Войти</button>
+      </div>
+    </div>
+
+    <!-- Чат XIAI -->
+    <div class="chat-container" id="chatContainer">
+      <h2>Чат с XIAI</h2>
+      <div class="messages" id="chatBox"></div>
+      <input type="text" id="userInput" placeholder="Введите математический пример..." />
       <button onclick="sendMessage()">Отправить</button>
     </div>
   </div>
 
   <script>
-    function showForm(formId) {
-      document.getElementById('loginForm').style.display = 'none';
-      document.getElementById('registerForm').style.display = 'none';
-      document.getElementById('chat').style.display = 'none';
-      document.getElementById(formId + 'Form').style.display = 'block';
+    // Простейшее хранилище пользователя
+    let registeredUser = { name: '', password: '' };
+
+    function register() {
+      const name = document.getElementById('regName').value.trim();
+      const pass = document.getElementById('regPass').value.trim();
+      if (!name || !pass) return alert("Введите имя и пароль!");
+      registeredUser.name = name;
+      registeredUser.password = pass;
+      alert("Вы успешно зарегистрированы!");
     }
 
     function login() {
-      const name = document.getElementById('loginName').value;
-      const pass = document.getElementById('loginPass').value;
-      if (name && pass) {
-        alert("Добро пожаловать, " + name + "!");
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('chat').style.display = 'block';
+      const name = document.getElementById('loginName').value.trim();
+      const pass = document.getElementById('loginPass').value.trim();
+      if (name === registeredUser.name && pass === registeredUser.password) {
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('chatContainer').style.display = 'block';
       } else {
-        alert("Введите имя и пароль.");
+        alert("Неверное имя или пароль!");
       }
     }
-
-    function register() {
-      const name = document.getElementById('regName').value;
-      const pass = document.getElementById('regPass').value;
-      const agree = document.getElementById('agree').checked;
-      if (name && pass && agree) {
-        alert("Успешная регистрация! Теперь войдите.");
-        showForm('login');
-      } else {
-        alert("Заполните все поля и согласитесь с условиями.");
-      }
-    }
-
-    // Чат
-    const chatBox = document.getElementById('chatBox');
 
     function sendMessage() {
       const input = document.getElementById('userInput');
       const userText = input.value.trim();
-      if (userText === '') return;
+      if (!userText) return;
 
       appendMessage('user', userText);
       input.value = '';
 
-      setTimeout(() => {
-        const botReply = getBotReply(userText);
-        appendMessage('bot', botReply);
-      }, 500);
+      // Обработка математических выражений
+      try {
+        const expression = userText.replace(/√/g, 'Math.sqrt'); // заменяем √ на Math.sqrt
+        const result = eval(expression);
+        appendMessage('bot', `${userText} = ${result}`);
+      } catch {
+        appendMessage('bot', "Не удалось понять выражение 😓");
+      }
     }
 
     function appendMessage(sender, text) {
+      const box = document.getElementById('chatBox');
       const msg = document.createElement('div');
       msg.className = sender;
-      msg.textContent = sender === 'user' ? "Вы: " + text : "XIAI: " + text;
-      chatBox.appendChild(msg);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function getBotReply(text) {
-      if (text.includes("2+2")) return "2 + 2 = 4";
-      if (text.includes("корень из 16")) return "Корень из 16 — это 4.";
-      return "Извините, я пока не знаю ответ, но скоро научусь!";
+      msg.textContent = (sender === 'user' ? "Вы: " : "XIAI: ") + text;
+      box.appendChild(msg);
+      box.scrollTop = box.scrollHeight;
     }
   </script>
+
 </body>
 </html>
 
