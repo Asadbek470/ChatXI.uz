@@ -1,7 +1,6 @@
 # OpenXI uz
 OpenXI
 меня создал Abdumalikov Asadbek
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
