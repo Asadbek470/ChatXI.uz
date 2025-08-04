@@ -4,14 +4,13 @@ OpenXI
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>XIAI — Математический помощник</title>
+  <meta charset="UTF-8">
+  <title>XIAI — Математический Ассистент</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      background: linear-gradient(to right, #a1c4fd, #c2e9fb);
       font-family: Arial, sans-serif;
-      text-align: center;
+      background: linear-gradient(to bottom right, #dbe9f4, #f7f9fc);
       margin: 0;
       padding: 0;
     }
@@ -19,146 +18,183 @@ OpenXI
     .container {
       max-width: 600px;
       margin: auto;
-      padding: 40px 20px;
-      background: white;
-      margin-top: 40px;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      background-color: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      margin-top: 50px;
     }
 
-    h1 {
+    h2 {
+      text-align: center;
       color: #333;
     }
 
-    .form-section {
-      margin-bottom: 30px;
+    form {
+      display: none;
+      margin-top: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
     }
 
     input[type="text"], input[type="password"] {
+      width: 100%;
       padding: 10px;
-      margin: 5px;
-      width: 80%;
-      border-radius: 8px;
+      margin-bottom: 15px;
+      border-radius: 6px;
       border: 1px solid #ccc;
     }
 
     button {
       padding: 10px 20px;
-      margin: 10px;
-      border: none;
-      background-color: #4285f4;
+      background-color: #0099cc;
       color: white;
-      border-radius: 8px;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
+      font-size: 16px;
     }
 
     button:hover {
-      background-color: #3367d6;
+      background-color: #007799;
     }
 
-    .chat-container {
-      display: none;
-      text-align: left;
+    .links {
+      text-align: center;
+      margin-top: 20px;
     }
 
-    .messages {
+    .links a {
+      margin: 0 10px;
+      color: #0099cc;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    #chatBox {
       height: 300px;
       overflow-y: auto;
       border: 1px solid #ccc;
       padding: 10px;
-      background: #f8f8f8;
-      border-radius: 10px;
       margin-bottom: 10px;
     }
 
-    .user { color: #000099; }
-    .bot  { color: #009900; }
+    .user { color: #000099; margin-bottom: 10px; }
+    .bot { color: #009900; margin-bottom: 10px; }
+
+    #chat {
+      display: none;
+    }
   </style>
 </head>
 <body>
-
   <div class="container">
-    <h1>Добро пожаловать в XIAI</h1>
+    <h2>Добро пожаловать в XIAI</h2>
 
-    <!-- Регистрация -->
-    <div id="authSection">
-      <div class="form-section">
-        <h3>Регистрация</h3>
-        <input type="text" id="regName" placeholder="Введите имя"><br>
-        <input type="password" id="regPass" placeholder="Придумайте пароль"><br>
-        <button onclick="register()">Зарегистрироваться</button>
-      </div>
-
-      <!-- Вход -->
-      <div class="form-section">
-        <h3>Вход</h3>
-        <input type="text" id="loginName" placeholder="Ваше имя"><br>
-        <input type="password" id="loginPass" placeholder="Ваш пароль"><br>
-        <button onclick="login()">Войти</button>
-      </div>
+    <div class="links">
+      <a onclick="showForm('login')">Вход</a> |
+      <a onclick="showForm('register')">Регистрация</a>
     </div>
 
-    <!-- Чат XIAI -->
-    <div class="chat-container" id="chatContainer">
-      <h2>Чат с XIAI</h2>
-      <div class="messages" id="chatBox"></div>
-      <input type="text" id="userInput" placeholder="Введите математический пример..." />
+    <!-- Вход -->
+    <form id="loginForm">
+      <label>Имя:</label>
+      <input type="text" id="loginName" required>
+      <label>Пароль:</label>
+      <input type="password" id="loginPass" required>
+      <button type="button" onclick="login()">Войти</button>
+    </form>
+
+    <!-- Регистрация -->
+    <form id="registerForm">
+      <label>Имя:</label>
+      <input type="text" id="regName" required>
+      <label>Пароль:</label>
+      <input type="password" id="regPass" required>
+      <label><input type="checkbox" id="agree"> Я согласен с условиями</label><br><br>
+      <button type="button" onclick="register()">Зарегистрироваться</button>
+    </form>
+
+    <!-- Чат -->
+    <div id="chat">
+      <h3>Чат XIAI</h3>
+      <div id="chatBox"></div>
+      <input type="text" id="userInput" placeholder="Напиши математический вопрос...">
       <button onclick="sendMessage()">Отправить</button>
     </div>
   </div>
 
   <script>
-    // Простейшее хранилище пользователя
-    let registeredUser = { name: '', password: '' };
-
-    function register() {
-      const name = document.getElementById('regName').value.trim();
-      const pass = document.getElementById('regPass').value.trim();
-      if (!name || !pass) return alert("Введите имя и пароль!");
-      registeredUser.name = name;
-      registeredUser.password = pass;
-      alert("Вы успешно зарегистрированы!");
+    function showForm(formId) {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('registerForm').style.display = 'none';
+      document.getElementById('chat').style.display = 'none';
+      document.getElementById(formId + 'Form').style.display = 'block';
     }
 
     function login() {
-      const name = document.getElementById('loginName').value.trim();
-      const pass = document.getElementById('loginPass').value.trim();
-      if (name === registeredUser.name && pass === registeredUser.password) {
-        document.getElementById('authSection').style.display = 'none';
-        document.getElementById('chatContainer').style.display = 'block';
+      const name = document.getElementById('loginName').value;
+      const pass = document.getElementById('loginPass').value;
+      if (name && pass) {
+        alert("Добро пожаловать, " + name + "!");
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('chat').style.display = 'block';
       } else {
-        alert("Неверное имя или пароль!");
+        alert("Введите имя и пароль.");
       }
     }
+
+    function register() {
+      const name = document.getElementById('regName').value;
+      const pass = document.getElementById('regPass').value;
+      const agree = document.getElementById('agree').checked;
+      if (name && pass && agree) {
+        alert("Успешная регистрация! Теперь войдите.");
+        showForm('login');
+      } else {
+        alert("Заполните все поля и согласитесь с условиями.");
+      }
+    }
+
+    // Чат
+    const chatBox = document.getElementById('chatBox');
 
     function sendMessage() {
       const input = document.getElementById('userInput');
       const userText = input.value.trim();
-      if (!userText) return;
+      if (userText === '') return;
 
       appendMessage('user', userText);
       input.value = '';
 
-      // Обработка математических выражений
-      try {
-        const expression = userText.replace(/√/g, 'Math.sqrt'); // заменяем √ на Math.sqrt
-        const result = eval(expression);
-        appendMessage('bot', `${userText} = ${result}`);
-      } catch {
-        appendMessage('bot', "Не удалось понять выражение 😓");
-      }
+      setTimeout(() => {
+        const botReply = getBotReply(userText);
+        appendMessage('bot', botReply);
+      }, 500);
     }
 
     function appendMessage(sender, text) {
-      const box = document.getElementById('chatBox');
       const msg = document.createElement('div');
       msg.className = sender;
-      msg.textContent = (sender === 'user' ? "Вы: " : "XIAI: ") + text;
-      box.appendChild(msg);
-      box.scrollTop = box.scrollHeight;
+      msg.textContent = sender === 'user' ? "Вы: " + text : "XIAI: " + text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function getBotReply(text) {
+      if (text.includes("2+2")) return "2 + 2 = 4";
+      if (text.includes("корень из 16")) return "Корень из 16 — это 4.";
+      return "Извините, я пока не знаю ответ, но скоро научусь!";
     }
   </script>
-
 </body>
 </html>
 
+
+     
+
+    
+    
