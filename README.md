@@ -185,16 +185,28 @@ OpenXI
     }
 
     function getBotReply(text) {
-      if (text.includes("2+2")) return "2 + 2 = 4";
-      if (text.includes("корень из 16")) return "Корень из 16 — это 4.";
-      return "Извините, я пока не знаю ответ, но скоро научусь!";
+      try {
+        // Преобразование для математических операций
+        text = text.toLowerCase()
+                   .replace(/sqrt\(([^)]+)\)/g, 'Math.sqrt($1)')
+                   .replace(/√(\d+)/g, 'Math.sqrt($1)')
+                   .replace(/(\d+)\s*\^\s*(\d+)/g, 'Math.pow($1,$2)');
+
+        // Проверка на безопасность
+        if (!/^[\d+\-*/().\s^√mathpowqrt]+$/.test(text)) {
+          return "Пожалуйста, введите корректный математический пример.";
+        }
+
+        const result = eval(text);
+        return `Ответ: ${result}`;
+      } catch (e) {
+        return "Не удалось решить пример. Попробуйте другой.";
+      }
     }
   </script>
 </body>
 </html>
 
-
-     
 
     
     
