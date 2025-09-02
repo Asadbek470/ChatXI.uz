@@ -7,6 +7,98 @@ OpenXI4
   <meta charset="UTF-8">
   <title>XIAI — Математический Ассистент</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background:#0b0c10; color:#e6e6e6; margin:0; padding:20px; }
+    textarea {
+      width:100%; height:120px; padding:10px; font-size:15px;
+      border-radius:8px; border:1px solid #444; background:#111; color:#fff;
+    }
+    button { margin-top:10px; padding:10px 15px; border-radius:6px; border:0; cursor:pointer;
+      background:#e63946; color:white; font-weight:bold;
+    }
+    #blocker {
+      position:fixed; inset:0; z-index:99999;
+      display:none; align-items:center; justify-content:center;
+      background:rgba(0,0,0,0.85);
+      backdrop-filter: blur(4px);
+    }
+    .panel {
+      background:#111217; padding:28px; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.6);
+      border:1px solid rgba(255,255,255,0.03); text-align:center;
+    }
+    .panel h1 { color:#e63946; margin-bottom:10px; }
+    .panel input {
+      padding:10px; margin-top:15px; width:200px;
+      border-radius:6px; border:1px solid #444; background:#222; color:white;
+    }
+    .panel button { margin-top:15px; background:#28a745; }
+  </style>
+</head>
+<body>
+  <h2>📝 Напиши заметку</h2>
+  <textarea id="note" placeholder="Введите текст..."></textarea><br>
+  <button id="saveNote">Сохранить</button>
+
+  <!-- Блокировка -->
+  <div id="blocker">
+    <div class="panel">
+      <h1>🚫 Доступ временно ограничен</h1>
+      <p>Вы нарушили правила: запрещены оскорбления и плохие слова.</p>
+      <p><b>Только администратор может разблокировать сайт.</b></p>
+      <input type="password" id="adminPass" placeholder="Введите пароль">
+      <br>
+      <button id="unlockBtn">Разблокировать</button>
+    </div>
+  </div>
+
+  <script>
+    const badWords = ["лох","тупица","плохой","дурак","идиот","асадбек плохой","асадбек лох","мат"]; 
+    const adminPassword = "ASADBEKantiban";
+
+    const noteInput = document.getElementById("note");
+    const saveBtn = document.getElementById("saveNote");
+    const blocker = document.getElementById("blocker");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const adminPass = document.getElementById("adminPass");
+
+    // Проверяем блокировку при загрузке
+    if (localStorage.getItem("blocked") === "true") {
+      blocker.style.display = "flex";
+    }
+
+    // Загружаем сохранённую заметку при входе
+    if (localStorage.getItem("savedNote")) {
+      noteInput.value = localStorage.getItem("savedNote");
+    }
+
+    // Сохраняем заметку по кнопке
+    saveBtn.addEventListener("click", () => {
+      let text = noteInput.value.toLowerCase();
+
+      for (let word of badWords) {
+        if (text.includes(word)) {
+          localStorage.setItem("blocked", "true");
+          blocker.style.display = "flex";
+          return;
+        }
+      }
+
+      localStorage.setItem("savedNote", noteInput.value); // сохраняем в браузере
+      alert("Заметка сохранена ✅ (она останется даже после перезагрузки)");
+    });
+
+    // Разблокировка
+    unlockBtn.addEventListener("click", () => {
+      if (adminPass.value === adminPassword) {
+        localStorage.setItem("blocked", "false");
+        blocker.style.display = "none";
+        adminPass.value = "";
+        alert("✅ Сайт успешно разблокирован (администратор вошёл)");
+      } else {
+        alert("❌ Неверный пароль!");
+      }
+    });
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
   <style>
     body {
