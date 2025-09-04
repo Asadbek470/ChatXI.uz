@@ -7,6 +7,10 @@ OpenXI4
   <meta charset="UTF-8">
   <title>XIAI — Математический Ассистент</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- favicon -->
+  <link rel="icon" type="image/png" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC0m3-hAkL0qx5VxSK_dxymtGUWrZqdDMG_Q&s">
+
   <style>
     body { font-family: Arial, sans-serif; background:#0b0c10; color:#e6e6e6; margin:0; padding:20px; }
     textarea {
@@ -32,14 +36,73 @@ OpenXI4
       border-radius:6px; border:1px solid #444; background:#222; color:white;
     }
     .panel button { margin-top:15px; background:#28a745; }
+
+    img.logo {
+      display:block;
+      margin:20px auto;
+      max-width:300px;
+      border-radius:12px;
+    }
+
+    #robotWatcher {
+      background: #111;
+      color: #e63946;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      border-bottom: 2px solid #e63946;
+      position: sticky;
+      top: 0;
+      z-index: 10000;
+    }
+    .sirena {
+      display: inline-block;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0; }
+    }
+
+    /* XiChat */
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 30px;
+      background-color: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      margin-top: 50px;
+      color: black;
+    }
+    h2 { text-align: center; color: #333; }
+    form { display: none; margin-top: 20px; }
+    label { display: block; margin: 10px 0 5px; }
+    input[type="text"], input[type="password"] {
+      width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc;
+    }
+    button:hover { background-color: #007799; }
+    .links { text-align: center; margin-top: 20px; }
+    .links a { margin: 0 10px; color: #0099cc; cursor: pointer; text-decoration: underline; }
+    #chatBox { height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+    .user { color: #000099; margin-bottom: 10px; }
+    .bot { color: #009900; margin-bottom: 10px; }
+    #chat { display: none; }
   </style>
 </head>
 <body>
+  <div id="robotWatcher">
+    👁 За вами следит <b>онлайн-робот-администратор</b>
+    <span class="sirena">🚨</span><span class="sirena">🚨</span><span class="sirena">🚨</span>
+  </div>
+
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC0m3-hAkL0qx5VxSK_dxymtGUWrZqdDMG_Q&s" alt="OpenXi Logo" class="logo">
+
   <h2>📝 Напиши заметку</h2>
   <textarea id="note" placeholder="Введите текст..."></textarea><br>
   <button id="saveNote">Сохранить</button>
 
-  <!-- Блокировка -->
   <div id="blocker">
     <div class="panel">
       <h1>🚫 Доступ временно ограничен</h1>
@@ -51,148 +114,15 @@ OpenXI4
     </div>
   </div>
 
-  <script>
-    const badWords = ["лох","тупица","плохой","дурак","идиот","асадбек плохой","асадбек лох","мат"]; 
-    const adminPassword = "ASADBEKantiban";
+  <audio id="alarmSound" src="https://www.soundjay.com/misc/sounds/fire-truck-siren-1.mp3"></audio>
 
-    const noteInput = document.getElementById("note");
-    const saveBtn = document.getElementById("saveNote");
-    const blocker = document.getElementById("blocker");
-    const unlockBtn = document.getElementById("unlockBtn");
-    const adminPass = document.getElementById("adminPass");
-
-    // Проверяем блокировку при загрузке
-    if (localStorage.getItem("blocked") === "true") {
-      blocker.style.display = "flex";
-    }
-
-    // Загружаем сохранённую заметку при входе
-    if (localStorage.getItem("savedNote")) {
-      noteInput.value = localStorage.getItem("savedNote");
-    }
-
-    // Сохраняем заметку по кнопке
-    saveBtn.addEventListener("click", () => {
-      let text = noteInput.value.toLowerCase();
-
-      for (let word of badWords) {
-        if (text.includes(word)) {
-          localStorage.setItem("blocked", "true");
-          blocker.style.display = "flex";
-          return;
-        }
-      }
-
-      localStorage.setItem("savedNote", noteInput.value); // сохраняем в браузере
-      alert("Заметка сохранена ✅ (она останется даже после перезагрузки)");
-    });
-
-    // Разблокировка
-    unlockBtn.addEventListener("click", () => {
-      if (adminPass.value === adminPassword) {
-        localStorage.setItem("blocked", "false");
-        blocker.style.display = "none";
-        adminPass.value = "";
-        alert("✅ Сайт успешно разблокирован (администратор вошёл)");
-      } else {
-        alert("❌ Неверный пароль!");
-      }
-    });
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, #dbe9f4, #f7f9fc);
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 30px;
-      background-color: white;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      border-radius: 12px;
-      margin-top: 50px;
-    }
-
-    h2 {
-      text-align: center;
-      color: #333;
-    }
-
-    form {
-      display: none;
-      margin-top: 20px;
-    }
-
-    label {
-      display: block;
-      margin: 10px 0 5px;
-    }
-
-    input[type="text"], input[type="password"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      padding: 10px 20px;
-      background-color: #0099cc;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    button:hover {
-      background-color: #007799;
-    }
-
-    .links {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .links a {
-      margin: 0 10px;
-      color: #0099cc;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    #chatBox {
-      height: 300px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-
-    .user { color: #000099; margin-bottom: 10px; }
-    .bot { color: #009900; margin-bottom: 10px; }
-
-    #chat {
-      display: none;
-    }
-  </style>
-</head>
-<body>
   <div class="container">
     <h2>Добро пожаловать в XIAI</h2>
-
     <div class="links">
       <a onclick="showForm('login')">Вход</a> |
       <a onclick="showForm('register')">Регистрация</a>
     </div>
 
-    <!-- Вход -->
     <form id="loginForm">
       <label>Имя:</label>
       <input type="text" id="loginName" required>
@@ -201,7 +131,6 @@ OpenXI4
       <button type="button" onclick="login()">Войти</button>
     </form>
 
-    <!-- Регистрация -->
     <form id="registerForm">
       <label>Имя:</label>
       <input type="text" id="regName" required>
@@ -211,7 +140,6 @@ OpenXI4
       <button type="button" onclick="register()">Зарегистрироваться</button>
     </form>
 
-    <!-- Чат -->
     <div id="chat">
       <h3>Чат XIAI</h3>
       <div id="chatBox"></div>
@@ -220,7 +148,55 @@ OpenXI4
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
   <script>
+    const badWords = ["лох","тупица","плохой","дурак","идиот","асадбек плохой","асадбек лох","мат","lox","пидор","пидрила","пидар","пидорас","сука","суки","бля","блядь","ебать","ебал","еблан","хуй","хер","хуйня","хуесос","гандон","гондон","мудак","мудила","мудачье","уебок","уебан","уебок","уебаный","уебище","выебал","выебать","suka","blyad","ebat","ebal","eblan","huy","her","huinya","huesos","gandon","gondon","mudak","mudila","mudachye","yebok","yeban","yebok","yebanyy","yebishche"]; 
+    const adminPassword = "ASADBEKantiban";
+
+    const noteInput = document.getElementById("note");
+    const saveBtn = document.getElementById("saveNote");
+    const blocker = document.getElementById("blocker");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const adminPass = document.getElementById("adminPass");
+    const alarm = document.getElementById("alarmSound");
+    const chatBox = document.getElementById("chatBox");
+
+    if (localStorage.getItem("blocked") === "true") {
+      blocker.style.display = "flex";
+      alarm.play();
+    }
+
+    if (localStorage.getItem("savedNote")) {
+      noteInput.value = localStorage.getItem("savedNote");
+    }
+
+    function triggerBlock() {
+      localStorage.setItem("blocked", "true");
+      blocker.style.display = "flex";
+      alarm.play();
+    }
+
+    saveBtn.addEventListener("click", () => {
+      let text = noteInput.value.toLowerCase();
+      for (let word of badWords) {
+        if (text.includes(word)) { triggerBlock(); return; }
+      }
+      localStorage.setItem("savedNote", noteInput.value); 
+      alert("Заметка сохранена ✅ (она останется даже после перезагрузки)");
+    });
+
+    unlockBtn.addEventListener("click", () => {
+      if (adminPass.value === adminPassword) {
+        localStorage.setItem("blocked", "false");
+        blocker.style.display = "none";
+        adminPass.value = "";
+        alarm.pause(); alarm.currentTime = 0;
+        alert("✅ Сайт успешно разблокирован (администратор вошёл)");
+      } else {
+        alert("❌ Неверный пароль!");
+      }
+    });
+
     function showForm(formId) {
       document.getElementById('loginForm').style.display = 'none';
       document.getElementById('registerForm').style.display = 'none';
@@ -252,12 +228,23 @@ OpenXI4
       }
     }
 
-    const chatBox = document.getElementById('chatBox');
+    function appendMessage(sender, text) {
+      const msg = document.createElement('div');
+      msg.className = sender;
+      msg.textContent = sender === 'user' ? "Вы: " + text : "XIAI: " + text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
     function sendMessage() {
       const input = document.getElementById('userInput');
       const userText = input.value.trim();
       if (userText === '') return;
+
+      let lowered = userText.toLowerCase();
+      for (let word of badWords) {
+        if (lowered.includes(word)) { triggerBlock(); return; }
+      }
 
       appendMessage('user', userText);
       input.value = '';
@@ -268,25 +255,8 @@ OpenXI4
       }, 500);
     }
 
-    function appendMessage(sender, text) {
-      const msg = document.createElement('div');
-      msg.className = sender;
-      msg.textContent = sender === 'user' ? "Вы: " + text : "XIAI: " + text;
-      chatBox.appendChild(msg);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
     function getBotReply(text) {
       try {
-        // Решение уравнений
-        if (text.includes('=')) {
-          const eq = math.parse(text);
-          const simplified = math.simplify(eq);
-          const solution = math.solve(text, 'x');
-          return `Решение: x = ${solution}`;
-        }
-
-        // Просто вычислить выражение
         const result = math.evaluate(text);
         return `Ответ: ${result}`;
       } catch (e) {
@@ -296,4 +266,5 @@ OpenXI4
   </script>
 </body>
 </html>
+
 
