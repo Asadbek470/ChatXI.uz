@@ -8,9 +8,6 @@ OpenXI4
   <title>XIAI — Математический Ассистент</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- favicon -->
-  <link rel="icon" type="image/png" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC0m3-hAkL0qx5VxSK_dxymtGUWrZqdDMG_Q&s">
-
   <style>
     body { font-family: Arial, sans-serif; background:#0b0c10; color:#e6e6e6; margin:0; padding:20px; }
     textarea {
@@ -23,7 +20,7 @@ OpenXI4
     #blocker {
       position:fixed; inset:0; z-index:99999;
       display:none; align-items:center; justify-content:center;
-      background:rgba(0,0,0,0.85);
+      background:rgba(0,0,0,0.9);
       backdrop-filter: blur(4px);
     }
     .panel {
@@ -40,7 +37,7 @@ OpenXI4
     img.logo {
       display:block;
       margin:20px auto;
-      max-width:300px;
+      max-width:200px;
       border-radius:12px;
     }
 
@@ -65,33 +62,31 @@ OpenXI4
       25%, 75% { opacity: 0; }
     }
 
-    /* XiChat */
     .container {
       max-width: 600px;
       margin: auto;
       padding: 30px;
       background-color: white;
+      color: black;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       border-radius: 12px;
-      margin-top: 50px;
-      color: black;
+      margin-top: 30px;
     }
-    h2 { text-align: center; color: #333; }
-    form { display: none; margin-top: 20px; }
-    label { display: block; margin: 10px 0 5px; }
-    input[type="text"], input[type="password"] {
-      width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc;
+
+    #chatBox {
+      height: 250px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
     }
-    button:hover { background-color: #007799; }
-    .links { text-align: center; margin-top: 20px; }
-    .links a { margin: 0 10px; color: #0099cc; cursor: pointer; text-decoration: underline; }
-    #chatBox { height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+
     .user { color: #000099; margin-bottom: 10px; }
     .bot { color: #009900; margin-bottom: 10px; }
-    #chat { display: none; }
   </style>
 </head>
 <body>
+  <!-- 🔴 Баннер про онлайн-робота -->
   <div id="robotWatcher">
     👁 За вами следит <b>онлайн-робот-администратор</b>
     <span class="sirena">🚨</span><span class="sirena">🚨</span><span class="sirena">🚨</span>
@@ -103,10 +98,22 @@ OpenXI4
   <textarea id="note" placeholder="Введите текст..."></textarea><br>
   <button id="saveNote">Сохранить</button>
 
+  <!-- Чат -->
+  <div class="container">
+    <h3>Чат XIAI</h3>
+    <div id="chatBox"></div>
+    <input type="text" id="userInput" placeholder="Напиши пример...">
+    <button onclick="sendMessage()">Отправить</button>
+  </div>
+
+  <!-- 🔊 Сирена -->
+  <audio id="alarmSound" src="https://www.soundjay.com/misc/sounds/police-siren-01.mp3" preload="auto"></audio>
+
+  <!-- Блокировка -->
   <div id="blocker">
     <div class="panel">
-      <h1>🚫 Доступ временно ограничен</h1>
-      <p>Вы нарушили правила: запрещены оскорбления и плохие слова.</p>
+      <h1>🚫 Доступ заблокирован</h1>
+      <p>Вы нарушили правила (мат, спам или хакерская атака).</p>
       <p><b>Только администратор может разблокировать сайт.</b></p>
       <input type="password" id="adminPass" placeholder="Введите пароль">
       <br>
@@ -114,43 +121,10 @@ OpenXI4
     </div>
   </div>
 
-  <audio id="alarmSound" src="https://www.soundjay.com/misc/sounds/fire-truck-siren-1.mp3"></audio>
-
-  <div class="container">
-    <h2>Добро пожаловать в XIAI</h2>
-    <div class="links">
-      <a onclick="showForm('login')">Вход</a> |
-      <a onclick="showForm('register')">Регистрация</a>
-    </div>
-
-    <form id="loginForm">
-      <label>Имя:</label>
-      <input type="text" id="loginName" required>
-      <label>Пароль:</label>
-      <input type="password" id="loginPass" required>
-      <button type="button" onclick="login()">Войти</button>
-    </form>
-
-    <form id="registerForm">
-      <label>Имя:</label>
-      <input type="text" id="regName" required>
-      <label>Пароль:</label>
-      <input type="password" id="regPass" required>
-      <label><input type="checkbox" id="agree"> Я согласен с условиями</label><br><br>
-      <button type="button" onclick="register()">Зарегистрироваться</button>
-    </form>
-
-    <div id="chat">
-      <h3>Чат XIAI</h3>
-      <div id="chatBox"></div>
-      <input type="text" id="userInput" placeholder="Напиши математический вопрос...">
-      <button onclick="sendMessage()">Отправить</button>
-    </div>
-  </div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
   <script>
-    const badWords = ["лох","тупица","плохой","дурак","идиот","асадбек плохой","асадбек лох","мат","lox","пидор","пидрила","пидар","пидорас","сука","суки","бля","блядь","ебать","ебал","еблан","хуй","хер","хуйня","хуесос","гандон","гондон","мудак","мудила","мудачье","уебок","уебан","уебок","уебаный","уебище","выебал","выебать","suka","blyad","ebat","ebal","eblan","huy","her","huinya","huesos","gandon","gondon","mudak","mudila","mudachye","yebok","yeban","yebok","yebanyy","yebishche"]; 
+    const badWords = ["лох","тупица","дурак","идиот","сука","блядь","ебать","хуй","пидор","gandon","mudak","blyad","suka","ebat","hui","pidor","eblan","yebat","yeblan","pizda","pizdets","blyadstvo","svoloch","svolochy","durak","duraki","idiot","idioty","mrd","mrdka","mrdki","blyad","blyadi","blyadki","eblan","eblani","eblanam","eblanov","pizda","pizdets","pizdami","pizdetsami","lox","suka"];
+    const hackPatterns = ["<script", "javascript:", "onerror", "onload","select *","drop table","insert into","delete from","union all","--","/*","*/","or 1=1"];
     const adminPassword = "ASADBEKantiban";
 
     const noteInput = document.getElementById("note");
@@ -160,111 +134,109 @@ OpenXI4
     const adminPass = document.getElementById("adminPass");
     const alarm = document.getElementById("alarmSound");
     const chatBox = document.getElementById("chatBox");
+    const userInput = document.getElementById("userInput");
 
-    if (localStorage.getItem("blocked") === "true") {
+    // 🚨 Блокировка
+    function blockUser(reason="Нарушение правил") {
+      localStorage.setItem("blocked","true");
       blocker.style.display = "flex";
-      alarm.play();
+      try { alarm.play(); } catch(e) {}
+      console.warn("Пользователь заблокирован:", reason);
     }
 
+    // Проверка при загрузке
+    if (localStorage.getItem("blocked") === "true") {
+      blocker.style.display = "flex";
+    }
+
+    // Восстановление заметки
     if (localStorage.getItem("savedNote")) {
       noteInput.value = localStorage.getItem("savedNote");
     }
 
-    function triggerBlock() {
-      localStorage.setItem("blocked", "true");
-      blocker.style.display = "flex";
-      alarm.play();
-    }
-
+    // Сохранение заметки
     saveBtn.addEventListener("click", () => {
       let text = noteInput.value.toLowerCase();
       for (let word of badWords) {
-        if (text.includes(word)) { triggerBlock(); return; }
+        if (text.includes(word)) {
+          blockUser("Мат в заметке");
+          return;
+        }
       }
-      localStorage.setItem("savedNote", noteInput.value); 
-      alert("Заметка сохранена ✅ (она останется даже после перезагрузки)");
+      for (let p of hackPatterns) {
+        if (text.includes(p)) {
+          blockUser("Хакерская атака");
+          return;
+        }
+      }
+      localStorage.setItem("savedNote", noteInput.value);
+      alert("Заметка сохранена ✅");
     });
 
+    // Разблокировка
     unlockBtn.addEventListener("click", () => {
       if (adminPass.value === adminPassword) {
-        localStorage.setItem("blocked", "false");
+        localStorage.setItem("blocked","false");
         blocker.style.display = "none";
         adminPass.value = "";
-        alarm.pause(); alarm.currentTime = 0;
-        alert("✅ Сайт успешно разблокирован (администратор вошёл)");
+        alert("✅ Сайт разблокирован (админ вошёл)");
       } else {
         alert("❌ Неверный пароль!");
       }
     });
 
-    function showForm(formId) {
-      document.getElementById('loginForm').style.display = 'none';
-      document.getElementById('registerForm').style.display = 'none';
-      document.getElementById('chat').style.display = 'none';
-      document.getElementById(formId + 'Form').style.display = 'block';
-    }
+    // Чат
+    let messageLog = [];
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
 
-    function login() {
-      const name = document.getElementById('loginName').value;
-      const pass = document.getElementById('loginPass').value;
-      if (name && pass) {
-        alert("Добро пожаловать, " + name + "!");
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('chat').style.display = 'block';
-      } else {
-        alert("Введите имя и пароль.");
-      }
-    }
+      // Проверка на мат и хак
+      let lower = text.toLowerCase();
+      for (let word of badWords) if (lower.includes(word)) return blockUser("Мат в чате");
+      for (let p of hackPatterns) if (lower.includes(p)) return blockUser("Хакерская атака");
 
-    function register() {
-      const name = document.getElementById('regName').value;
-      const pass = document.getElementById('regPass').value;
-      const agree = document.getElementById('agree').checked;
-      if (name && pass && agree) {
-        alert("Успешная регистрация! Теперь войдите.");
-        showForm('login');
-      } else {
-        alert("Заполните все поля и согласитесь с условиями.");
-      }
+      // Спам: 5 сообщений за 10 сек → блок
+      let now = Date.now();
+      messageLog.push(now);
+      messageLog = messageLog.filter(t => now - t < 10000);
+      if (messageLog.length > 5) return blockUser("Спам атака");
+
+      appendMessage("user", text);
+      userInput.value = "";
+
+      setTimeout(() => {
+        appendMessage("bot", getBotReply(text));
+      }, 400);
     }
 
     function appendMessage(sender, text) {
-      const msg = document.createElement('div');
+      const msg = document.createElement("div");
       msg.className = sender;
-      msg.textContent = sender === 'user' ? "Вы: " + text : "XIAI: " + text;
+      msg.textContent = (sender === "user" ? "Вы: " : "XIAI: ") + text;
       chatBox.appendChild(msg);
       chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function sendMessage() {
-      const input = document.getElementById('userInput');
-      const userText = input.value.trim();
-      if (userText === '') return;
-
-      let lowered = userText.toLowerCase();
-      for (let word of badWords) {
-        if (lowered.includes(word)) { triggerBlock(); return; }
-      }
-
-      appendMessage('user', userText);
-      input.value = '';
-
-      setTimeout(() => {
-        const botReply = getBotReply(userText);
-        appendMessage('bot', botReply);
-      }, 500);
     }
 
     function getBotReply(text) {
       try {
         const result = math.evaluate(text);
-        return `Ответ: ${result}`;
-      } catch (e) {
-        return "Ошибка: Некорректный пример или уравнение.";
+        return "Ответ: " + result;
+      } catch(e) {
+        return "Ошибка: Некорректный пример.";
       }
     }
+
+    // Блокировка при F12/DevTools
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J"))) {
+        e.preventDefault();
+        blockUser("Попытка открыть DevTools");
+      }
+    });
   </script>
 </body>
 </html>
+
 
 
