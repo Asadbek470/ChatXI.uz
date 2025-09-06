@@ -7,26 +7,119 @@ OpenXI4
   <meta charset="UTF-8">
   <title>XIAI — Математический Ассистент</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body { font-family: Arial, sans-serif; background:#0b0c10; color:#e6e6e6; margin:0; padding:20px; }
-    textarea { width:100%; height:120px; padding:10px; font-size:15px; border-radius:8px; border:1px solid #444; background:#111; color:#fff; }
-    button { margin-top:10px; padding:10px 15px; border-radius:6px; border:0; cursor:pointer; background:#e63946; color:white; font-weight:bold; }
-    #blocker { position:fixed; inset:0; z-index:99999; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.9); backdrop-filter: blur(4px); }
-    .panel { background:#111217; padding:28px; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.03); text-align:center; }
+    textarea {
+      width:100%; height:120px; padding:10px; font-size:15px;
+      border-radius:8px; border:1px solid #444; background:#111; color:#fff;
+    }
+    button { margin-top:10px; padding:10px 15px; border-radius:6px; border:0; cursor:pointer;
+      background:#e63946; color:white; font-weight:bold;
+    }
+    #blocker {
+      position:fixed; inset:0; z-index:99999;
+      display:none; align-items:center; justify-content:center;
+      background:rgba(0,0,0,0.9);
+      backdrop-filter: blur(4px);
+    }
+    .panel {
+      background:#111217; padding:28px; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.6);
+      border:1px solid rgba(255,255,255,0.03); text-align:center;
+    }
     .panel h1 { color:#e63946; margin-bottom:10px; }
-    .panel input { padding:10px; margin-top:15px; width:200px; border-radius:6px; border:1px solid #444; background:#222; color:white; }
+    .panel input {
+      padding:10px; margin-top:15px; width:200px;
+      border-radius:6px; border:1px solid #444; background:#222; color:white;
+    }
     .panel button { margin-top:15px; background:#28a745; }
-    img.logo { display:block; margin:20px auto; max-width:200px; border-radius:12px; }
-    #robotWatcher { background: #111; color: #e63946; padding: 10px; text-align: center; font-weight: bold; font-size: 18px; border-bottom: 2px solid #e63946; position: sticky; top: 0; z-index: 10000; }
-    .sirena { display: inline-block; animation: blink 1s infinite; }
-    @keyframes blink { 0%,50%,100%{opacity:1;} 25%,75%{opacity:0;} }
-    .container { max-width: 600px; margin: auto; padding: 30px; background-color: white; color: black; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); border-radius: 12px; margin-top: 30px; }
-    #chatBox { height: 250px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; white-space: pre-line; }
+
+    img.logo {
+      display:block;
+      margin:20px auto;
+      max-width:200px;
+      border-radius:12px;
+    }
+
+    #robotWatcher {
+      background: #111;
+      color: #e63946;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      border-bottom: 2px solid #e63946;
+      position: sticky;
+      top: 0;
+      z-index: 10000;
+    }
+    .sirena {
+      display: inline-block;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0; }
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 30px;
+      background-color: white;
+      color: black;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      margin-top: 30px;
+    }
+
+    #chatBox {
+      height: 250px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
     .user { color: #000099; margin-bottom: 10px; }
     .bot { color: #009900; margin-bottom: 10px; }
+    
+    /* Стили для кнопки микрофона */
+    .voice-input-container {
+      display: flex;
+      margin-top: 10px;
+    }
+    #userInput {
+      flex: 1;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    #micButton {
+      margin-left: 10px;
+      width: 50px;
+      border-radius: 50%;
+      background: #e63946;
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #micButton.listening {
+      background: #28a745;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
   </style>
 </head>
 <body>
+  <!-- 🔴 Баннер про онлайн-робота -->
   <div id="robotWatcher">
     👁 За вами следит <b>онлайн-робот-администратор</b>
     <span class="sirena">🚨</span><span class="sirena">🚨</span><span class="sirena">🚨</span>
@@ -38,16 +131,21 @@ OpenXI4
   <textarea id="note" placeholder="Введите текст..."></textarea><br>
   <button id="saveNote">Сохранить</button>
 
+  <!-- Чат -->
   <div class="container">
     <h3>Чат XIAI</h3>
     <div id="chatBox"></div>
-    <input type="text" id="userInput" placeholder="Напиши пример...">
+    <div class="voice-input-container">
+      <input type="text" id="userInput" placeholder="Напиши пример или нажми микрофон...">
+      <button id="micButton">🎤</button>
+    </div>
     <button onclick="sendMessage()">Отправить</button>
-    <button onclick="startVoice()">🎤</button>
   </div>
 
+  <!-- 🔊 Сирена -->
   <audio id="alarmSound" src="https://www.soundjay.com/misc/sounds/police-siren-01.mp3" preload="auto"></audio>
 
+  <!-- Блокировка -->
   <div id="blocker">
     <div class="panel">
       <h1>🚫 Доступ заблокирован</h1>
@@ -73,8 +171,9 @@ OpenXI4
     const alarm = document.getElementById("alarmSound");
     const chatBox = document.getElementById("chatBox");
     const userInput = document.getElementById("userInput");
-    const synth = window.speechSynthesis;
+    const micButton = document.getElementById("micButton");
 
+    // 🚨 Блокировка
     function blockUser(reason="Нарушение правил") {
       localStorage.setItem("blocked","true");
       blocker.style.display = "flex";
@@ -82,35 +181,59 @@ OpenXI4
       console.warn("Пользователь заблокирован:", reason);
     }
 
-    if (localStorage.getItem("blocked") === "true") blocker.style.display = "flex";
-    if (localStorage.getItem("savedNote")) noteInput.value = localStorage.getItem("savedNote");
+    // Проверка при загрузке
+    if (localStorage.getItem("blocked") === "true") {
+      blocker.style.display = "flex";
+    }
 
+    // Восстановление заметки
+    if (localStorage.getItem("savedNote")) {
+      noteInput.value = localStorage.getItem("savedNote");
+    }
+
+    // Сохранение заметки
     saveBtn.addEventListener("click", () => {
       let text = noteInput.value.toLowerCase();
-      for (let word of badWords) if (text.includes(word)) return blockUser("Мат в заметке");
-      for (let p of hackPatterns) if (text.includes(p)) return blockUser("Хакерская атака");
+      for (let word of badWords) {
+        if (text.includes(word)) {
+          blockUser("Мат в заметке");
+          return;
+        }
+      }
+      for (let p of hackPatterns) {
+        if (text.includes(p)) {
+          blockUser("Хакерская атака");
+          return;
+        }
+      }
       localStorage.setItem("savedNote", noteInput.value);
       alert("Заметка сохранена ✅");
     });
 
+    // Разблокировка
     unlockBtn.addEventListener("click", () => {
       if (adminPass.value === adminPassword) {
         localStorage.setItem("blocked","false");
         blocker.style.display = "none";
         adminPass.value = "";
         alert("✅ Сайт разблокирован (админ вошёл)");
-      } else alert("❌ Неверный пароль!");
+      } else {
+        alert("❌ Неверный пароль!");
+      }
     });
 
+    // Чат
     let messageLog = [];
     function sendMessage() {
       const text = userInput.value.trim();
       if (!text) return;
 
+      // Проверка на мат и хак
       let lower = text.toLowerCase();
       for (let word of badWords) if (lower.includes(word)) return blockUser("Мат в чате");
       for (let p of hackPatterns) if (lower.includes(p)) return blockUser("Хакерская атака");
 
+      // Спам: 5 сообщений за 10 сек → блок
       let now = Date.now();
       messageLog.push(now);
       messageLog = messageLog.filter(t => now - t < 10000);
@@ -120,9 +243,7 @@ OpenXI4
       userInput.value = "";
 
       setTimeout(() => {
-        const reply = getBotReply(text);
-        appendMessage("bot", reply);
-        speak(reply);
+        appendMessage("bot", getBotReply(text));
       }, 400);
     }
 
@@ -134,59 +255,25 @@ OpenXI4
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    function multiplicationTable(n) {
-      n = parseInt(n);
-      if (isNaN(n)) return "Ошибка: некорректное число.";
-      let table = "";
-      for (let i = 1; i <= 100; i++) {
-        table += `${n} × ${i} = ${n*i}\n`;
-      }
-      return table;
-    }
-
-    function evaluateExpression(expr) {
-      try {
-        // BigInt для целых чисел
-        let exprBig = expr.replace(/\d+/g, m => BigInt(m));
-        const result = math.evaluate(exprBig.toString());
-        return "Ответ: " + result.toString();
-      } catch(e) {
-        try {
-          return "Ответ: " + math.evaluate(expr);
-        } catch(err) {
-          return solveTextTask(expr);
-        }
-      }
-    }
-
     function getBotReply(text) {
-      text = text.trim();
-
-      let match = text.match(/таблица умножения (\d+)/i);
-      if (match) return multiplicationTable(match[1]);
-
-      return evaluateExpression(text);
-    }
-
-    function solveTextTask(text) {
-      text = text.toLowerCase();
-      const words = text.replace(/\d+/g, "").trim();
-      const numbers = text.match(/\d+/g);
-
-      if (words.length > 3 && numbers && numbers.length >= 1) {
-        const total = numbers.reduce((a,b) => a + parseInt(b), 0);
-        return `Ответ (текстовая задача): ${total}`;
+      try {
+        // Заменяем все варианты обозначения умножения на *
+        let cleanedText = text
+          .replace(/[xх×]/gi, '*')  // заменяем x, х, × на *
+          .replace(/[÷:]/gi, '/')   // заменяем ÷, : на /
+          .replace(/\s+/g, '')      // удаляем все пробелы
+          .replace(/[^0-9+\-*/().]/g, ''); // удаляем все лишние символы
+        
+        if (!cleanedText) return "Пожалуйста, введите математическое выражение";
+        
+        const result = math.evaluate(cleanedText);
+        return `Ответ: ${text} = ${result}`;
+      } catch(e) {
+        return "Ошибка: Некорректный пример. Попробуйте что-то вроде '2+2' или '5*3'";
       }
-      return "Ошибка: некорректный пример.";
     }
 
-    function speak(text) {
-      if (!synth) return;
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = "ru-RU";
-      synth.speak(utter);
-    }
-
+    // Блокировка при F12/DevTools
     document.addEventListener("keydown", (e) => {
       if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J"))) {
         e.preventDefault();
@@ -194,20 +281,70 @@ OpenXI4
       }
     });
 
-    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let recognizer;
-    if (Recognition) { recognizer = new Recognition(); recognizer.lang = "ru-RU"; }
+    // Голосовой ввод
+    let recognition = null;
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'ru-RU';
 
-    function startVoice() {
-      if (!recognizer) { alert("Ваш браузер не поддерживает голосовой ввод."); return; }
-      recognizer.start();
-      recognizer.onresult = (event) => {
-        const text = event.results[0][0].transcript;
-        userInput.value = text;
-        sendMessage();
+      recognition.onstart = function() {
+        micButton.classList.add('listening');
+        userInput.placeholder = "Говорите...";
       };
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        userInput.value = transcript;
+        micButton.classList.remove('listening');
+        userInput.placeholder = "Напиши пример или нажми микрофон...";
+        
+        // Автоматически отправляем сообщение после распознавания
+        setTimeout(sendMessage, 500);
+      };
+
+      recognition.onerror = function(event) {
+        console.error('Ошибка распознавания голоса:', event.error);
+        micButton.classList.remove('listening');
+        userInput.placeholder = "Напиши пример или нажми микрофон...";
+        
+        if (event.error === 'not-allowed') {
+          appendMessage("bot", "Разрешите доступ к микрофону для голосового ввода");
+        }
+      };
+
+      recognition.onend = function() {
+        micButton.classList.remove('listening');
+        userInput.placeholder = "Напиши пример или нажми микрофон...";
+      };
+
+      micButton.addEventListener('click', () => {
+        if (micButton.classList.contains('listening')) {
+          recognition.stop();
+          return;
+        }
+        
+        try {
+          recognition.start();
+        } catch (error) {
+          console.error('Ошибка запуска распознавания:', error);
+          appendMessage("bot", "Ошибка доступа к микрофону. Проверьте разрешения браузера.");
+        }
+      });
+    } else {
+      // Браузер не поддерживает распознавание речи
+      micButton.style.display = 'none';
+      userInput.placeholder = "Напиши пример...";
+      appendMessage("bot", "Ваш браузер не поддерживает голосовой ввод");
     }
+
+    // Отправка сообщения по нажатию Enter
+    userInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
   </script>
 </body>
 </html>
-
