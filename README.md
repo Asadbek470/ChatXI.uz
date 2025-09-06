@@ -104,6 +104,7 @@ OpenXI4
     <div id="chatBox"></div>
     <input type="text" id="userInput" placeholder="Напиши пример...">
     <button onclick="sendMessage()">Отправить</button>
+    <button onclick="startVoice()">🎤</button>
   </div>
 
   <!-- 🔊 Сирена -->
@@ -135,6 +136,8 @@ OpenXI4
     const alarm = document.getElementById("alarmSound");
     const chatBox = document.getElementById("chatBox");
     const userInput = document.getElementById("userInput");
+
+    const synth = window.speechSynthesis;
 
     // 🚨 Блокировка
     function blockUser(reason="Нарушение правил") {
@@ -206,7 +209,9 @@ OpenXI4
       userInput.value = "";
 
       setTimeout(() => {
-        appendMessage("bot", getBotReply(text));
+        const reply = getBotReply(text);
+        appendMessage("bot", reply);
+        speak(reply); // 🎙️ озвучка ответа
       }, 400);
     }
 
@@ -227,6 +232,14 @@ OpenXI4
       }
     }
 
+    // 🎙️ Озвучивание текста
+    function speak(text) {
+      if (!synth) return;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "ru-RU"; // Можно "uz-UZ"
+      synth.speak(utter);
+    }
+
     // Блокировка при F12/DevTools
     document.addEventListener("keydown", (e) => {
       if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J"))) {
@@ -234,9 +247,27 @@ OpenXI4
         blockUser("Попытка открыть DevTools");
       }
     });
+
+    // 🎤 Голосовой ввод
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognizer;
+    if (Recognition) {
+      recognizer = new Recognition();
+      recognizer.lang = "ru-RU"; // Можно "uz-UZ"
+    }
+
+    function startVoice() {
+      if (!recognizer) {
+        alert("Ваш браузер не поддерживает голосовой ввод.");
+        return;
+      }
+      recognizer.start();
+      recognizer.onresult = (event) => {
+        const text = event.results[0][0].transcript;
+        userInput.value = text;
+        sendMessage();
+      };
+    }
   </script>
 </body>
 </html>
-
-
-
