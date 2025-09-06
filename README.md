@@ -124,7 +124,7 @@ OpenXI4
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
   <script>
-    const badWords = ["лох","тупица","дурак","идиот","сука","блядь","ебать","хуй","пидор","gandon","mudak","blyad","suka","ebat","hui","pidor","eblan","yebat","yeblan","pizda","pizdets","blyadstvo","svoloch","svolochy","durak","duraki","idiot","idioty","mrd","mrdka","mrdki","blyad","blyadi","blyadki","eblan","eblani","eblanam","eblanov","pizda","pizdets","pizdami","pizdetsami","lox","suka"];
+    const badWords = ["лох","тупица","дурак","идиот","сука","блядь","ебать","хуй","пидор","gandon","mudak","blyad","suka","ebat","hui","pidor","eblan","yebat","yeblan","pizda","pizdets","blyadstvo","svoloch","svolochy","durak","duraki","idiot","idioty","mrd","mrdka","mrdki","lox"];
     const hackPatterns = ["<script", "javascript:", "onerror", "onload","select *","drop table","insert into","delete from","union all","--","/*","*/","or 1=1"];
     const adminPassword = "ASADBEKantiban";
 
@@ -194,12 +194,10 @@ OpenXI4
       const text = userInput.value.trim();
       if (!text) return;
 
-      // Проверка на мат и хак
       let lower = text.toLowerCase();
       for (let word of badWords) if (lower.includes(word)) return blockUser("Мат в чате");
       for (let p of hackPatterns) if (lower.includes(p)) return blockUser("Хакерская атака");
 
-      // Спам: 5 сообщений за 10 сек → блок
       let now = Date.now();
       messageLog.push(now);
       messageLog = messageLog.filter(t => now - t < 10000);
@@ -211,7 +209,7 @@ OpenXI4
       setTimeout(() => {
         const reply = getBotReply(text);
         appendMessage("bot", reply);
-        speak(reply); // 🎙️ озвучка ответа
+        speak(reply);
       }, 400);
     }
 
@@ -223,24 +221,33 @@ OpenXI4
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
+    // 💡 Улучшенный калькулятор
     function getBotReply(text) {
       try {
-        const result = math.evaluate(text);
+        let expr = text.replace(/\s+/g, ""); // убираем пробелы
+
+        if (expr.includes("=")) {
+          let [left, right] = expr.split("=");
+          const equation = math.parse(left + "-(" + right + ")");
+          const variable = equation.freeSymbols()[0];
+          const sol = math.solve(equation, variable);
+          return "Решение уравнения: " + variable.name + " = " + sol;
+        }
+
+        const result = math.evaluate(expr);
         return "Ответ: " + result;
       } catch(e) {
         return "Ошибка: Некорректный пример.";
       }
     }
 
-    // 🎙️ Озвучивание текста
     function speak(text) {
       if (!synth) return;
       const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = "ru-RU"; // Можно "uz-UZ"
+      utter.lang = "ru-RU";
       synth.speak(utter);
     }
 
-    // Блокировка при F12/DevTools
     document.addEventListener("keydown", (e) => {
       if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J"))) {
         e.preventDefault();
@@ -248,12 +255,11 @@ OpenXI4
       }
     });
 
-    // 🎤 Голосовой ввод
     const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognizer;
     if (Recognition) {
       recognizer = new Recognition();
-      recognizer.lang = "ru-RU"; // Можно "uz-UZ"
+      recognizer.lang = "ru-RU";
     }
 
     function startVoice() {
