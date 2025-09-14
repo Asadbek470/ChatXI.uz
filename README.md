@@ -7,6 +7,41 @@ OpenXI4
   <meta charset="UTF-8">
   <title>XIAI — Математический Ассистент</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <div style="max-width:600px; margin:20px auto; padding:20px; background:#f9fafb; border-radius:20px; box-shadow:0 4px 12px rgba(0,0,0,0.1); font-family:Arial, sans-serif;">
+
+  <h2 style="text-align:center; color:#1e3a8a;">✨ Что нового в OpenXI & AIChat?</h2>
+  <p style="font-size:16px; line-height:1.6; color:#374151;">
+    Мы обновили проект и добавили много интересных возможностей! Теперь работать и изучать математику стало ещё удобнее и интереснее.
+  </p>
+
+  <h3 style="color:#111827; margin-top:20px;">🔥 Новое обновление:</h3>
+  <ul style="color:#374151; font-size:15px; line-height:1.6;">
+    <li>🧮 Улучшенные математические решения с пошаговыми объяснениями</li>
+    <li>⚡ Быстрые ответы в AIChat</li>
+    <li>📊 Новые графики и визуализация формул</li>
+    <li>🌐 Более удобный интерфейс и современный дизайн</li>
+  </ul>
+
+  <h3 style="color:#111827; margin-top:20px;">👑 VIP-режим</h3>
+  <p style="font-size:16px; line-height:1.6; color:#374151;">
+    Теперь доступен <b>VIP-режим</b> — расширенный набор функций для тех, кто хочет максимальный комфорт:
+  </p>
+  <ul style="color:#374151; font-size:15px; line-height:1.6;">
+    <li>🚀 Мгновенные решения без ограничений</li>
+    <li>📖 Расширенные объяснения и примеры</li>
+    <li>🎨 Персонализация интерфейса</li>
+    <li>🔔 Приоритетная поддержка</li>
+    <li>💡 Секретные фишки только для VIP</li>
+  </ul>
+
+  <div style="margin-top:20px; padding:15px; background:#e0f2fe; border-radius:12px; text-align:center;">
+    <p style="font-size:18px; color:#0c4a6e; font-weight:bold;">
+      Стоимость подписки — всего <span style="color:#0284c7;">$1 в месяц</span> 💎
+    </p>
+  </div>
+
+</div>
+
   
   <!-- Подключаем необходимые библиотеки для VIP-режима -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
@@ -1219,5 +1254,29 @@ OpenXI4
       addVIPMessage('Готов к работе! Вы можете решать сложные математические задачи, строить графики и многое другое.', 'bot');
     }
   </script>
+  <div style="height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:20px; background:linear-gradient(135deg,#000000,#000000); font-family:Arial,sans-serif;">
+
+  <!-- WhatsApp -->
+  <a href="https://wa.me/+998999100097" target="_blank"
+     style="display:inline-block; padding:16px 28px; font-size:18px; font-weight:bold; border-radius:14px; text-decoration:none; color:#04260f; background:#25D366; box-shadow:0 6px 16px rgba(0,0,0,0.4); transition:all .3s;">
+    💬 Связаться в WhatsApp
+  </a>
+
+  <!-- Click -->
+  <a href="https://my.click.uz/services/" target="_blank"
+     style="display:inline-block; padding:16px 28px; font-size:18px; font-weight:bold; border-radius:14px; text-decoration:none; color:white; background:#007bff; box-shadow:0 6px 16px rgba(0,0,0,0.4); transition:all .3s;">
+    💳 Оплатить через Click
+  </a>
+
+  <!-- PayMe -->
+  <a href="https://payme.uz/home" target="_blank"
+     style="display:inline-block; padding:16px 28px; font-size:18px; font-weight:bold; border-radius:14px; text-decoration:none; color:white; background:#673ab7; box-shadow:0 6px 16px rgba(0,0,0,0.4); transition:all .3s;">
+    💳 Оплатить через PayMe
+  </a>
+
+</div>
+<button><a href="https://asadbek470.github.io/support/">support</a></button>
+<button><a href="https://asadbek470.github.io/admin.com">adminPass</a></button>
 </body>
 </html>
+
