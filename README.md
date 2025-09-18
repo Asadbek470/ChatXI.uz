@@ -6,7 +6,7 @@ OpenXI4
 <head>
   <meta charset="UTF-8">
   <title>XIAI — Математический Ассистент</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <div style="max-width:600px; margin:20px auto; padding:20px; background:#f9fafb; border-radius:20px; box-shadow:0 4px 12px rgba(0,0,0,0.1); font-family:Arial, sans-serif;">
 
   <h2 style="text-align:center; color:#1e3a8a;">✨ Что нового в OpenXI & AIChat?</h2>
@@ -491,6 +491,7 @@ OpenXI4
       margin-left: 10px;
     }
     
+    /* МОБИЛЬНАЯ АДАПТАЦИЯ */
     @media (max-width: 900px) {
       .vip-container {
         grid-template-columns: 1fr;
@@ -514,9 +515,198 @@ OpenXI4
     .vip-pulse {
       animation: pulse 2s infinite;
     }
+    
+    /* МОБИЛЬНАЯ АДАПТАЦИЯ - ДОПОЛНИТЕЛЬНЫЕ СТИЛИ */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+        font-size: 14px;
+      }
+      
+      .container {
+        padding: 15px;
+        margin-top: 15px;
+      }
+      
+      #chatBox {
+        height: 200px;
+      }
+      
+      textarea {
+        height: 100px;
+        font-size: 16px; /* Увеличиваем для удобства на мобильных */
+      }
+      
+      button {
+        padding: 12px 18px; /* Увеличиваем кнопки для удобства нажатия */
+        font-size: 16px;
+      }
+      
+      .vip-header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px 0;
+      }
+      
+      .vip-user-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .vip-sidebar {
+        padding: 15px;
+      }
+      
+      .vip-sidebar-menu a {
+        padding: 12px;
+        font-size: 16px;
+      }
+      
+      .vip-input-group {
+        flex-direction: column;
+      }
+      
+      .vip-input-group input {
+        padding: 14px;
+        font-size: 16px; /* Увеличиваем размер шрифта для мобильных */
+      }
+      
+      .vip-chat-container {
+        height: 250px;
+      }
+      
+      .vip-message {
+        max-width: 90%; /* Сообщения занимают больше места на мобильных */
+        font-size: 15px;
+        padding: 12px;
+      }
+      
+      .vip-toolbar {
+        justify-content: center;
+      }
+      
+      .vip-tool-btn {
+        padding: 10px 14px;
+        font-size: 16px;
+      }
+      
+      .vip-plot-container {
+        height: 250px;
+      }
+      
+      .vip-card {
+        padding: 15px;
+      }
+      
+      .panel {
+        padding: 20px;
+        width: 90%;
+        max-width: 90%;
+      }
+      
+      .panel input {
+        width: 100%;
+        box-sizing: border-box;
+      }
+      
+      #robotWatcher {
+        font-size: 16px;
+        padding: 8px;
+      }
+      
+      /* Адаптация кнопок оплаты */
+      .payment-buttons {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .payment-buttons a {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+      }
+      
+      /* Улучшение для мобильного меню */
+      .mobile-menu-toggle {
+        display: block;
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 1000;
+        background: var(--accent);
+        color: var(--dark);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      }
+      
+      /* Адаптация VIP-сайдбара для мобильных */
+      .vip-sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 280px;
+        height: 100%;
+        z-index: 999;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+      }
+      
+      .vip-sidebar.active {
+        left: 0;
+      }
+      
+      .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 998;
+        display: none;
+      }
+      
+      .sidebar-overlay.active {
+        display: block;
+      }
+    }
+    
+    /* Стили для экранов больше 768px */
+    @media (min-width: 769px) {
+      .mobile-menu-toggle,
+      .sidebar-overlay {
+        display: none;
+      }
+    }
+    
+    /* Улучшения для очень маленьких экранов */
+    @media (max-width: 360px) {
+      .vip-title {
+        font-size: 3rem;
+      }
+      
+      .vip-logo h1 {
+        font-size: 20px;
+      }
+      
+      .vip-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Кнопка мобильного меню -->
+  <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</div>
+  <div class="sidebar-overlay" onclick="toggleMobileMenu()"></div>
+
   <!-- ОБЫЧНЫЙ РЕЖИМ -->
   <div id="normal-app">
     <!-- 🔴 Баннер про онлайн-робота -->
@@ -661,6 +851,34 @@ OpenXI4
     <div class="vip-title">OpenXI.US</div>
   </div>
 
+  <!-- Кнопки оплаты с адаптацией для мобильных -->
+  <div style="height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:20px; background:linear-gradient(135deg,#000000,#000000); font-family:Arial,sans-serif; padding: 20px; box-sizing: border-box;" class="payment-buttons">
+
+    <!-- WhatsApp -->
+    <a href="https://wa.me/+998999100097" target="_blank"
+       style="display:inline-block; padding:16px 28px; font-size:18px; font-weight:bold; border-radius:14px; text-decoration:none; color:#04260f; background:#25D366; box-shadow:0 6px 16px rgba(0,0,0,0.4); transition:all .3s;">
+      💬 Связаться в WhatsApp
+    </a>
+
+    <!-- Click -->
+    <a href="https://my.click.uz/services/" target="_blank"
+       style="display:inline-block; padding:16px 28px; font-size:18px; font-weight:bold; border-radius:14px; text-decoration:none; color:white; background:#007bff; box-shadow:0 6px 16px rgba(0,0,0,0.4); transition:all .3s;">
+      💳 Оплатить через Click
+    </a>
+
+    <!-- PayMe -->
+    <a href="https://payme.uz/home" target="_blank"
+       style="display:inline-block; padding:16px 28px; font-size:18px; font-weight:bold; border-radius:14px; text-decoration:none; color:white; background:#673ab7; box-shadow:0 6px 16px rgba(0,0,0,0.4); transition:all .3s;">
+      💳 Оплатить через PayMe
+    </a>
+
+  </div>
+
+  <div style="display: flex; gap: 10px; justify-content: center; margin: 20px 0;">
+    <button><a href="https://asadbek470.github.io/support/" style="text-decoration: none; color: white;">support</a></button>
+    <button><a href="https://asadbek470.github.io/admin.com" style="text-decoration: none; color: white;">adminPass</a></button>
+  </div>
+
   <script>
     // ========== ОБЫЧНЫЙ РЕЖИМ ==========
     const badWords = ["лох","тупица","дурак","идиот","сука","блядь","ебать","хуй","пидор","gandon","mudak","blyad","suka","ebat","hui","pidor","eblan","yebat","yeblan","pizda","pizdets","blyadstvo","svoloch","svolochy","durak","duraki","idiot","idioty","mrd","mrdka","mrdki","blyad","blyadi","blyadki","eblan","eblani","eblanam","eblanov","pizda","pizdets","pizdami","pizdetsami","lox","suka"];
@@ -676,6 +894,14 @@ OpenXI4
     const chatBox = document.getElementById("chatBox");
     const userInput = document.getElementById("userInput");
     const micButton = document.getElementById("micButton");
+
+    // Функция переключения мобильного меню
+    function toggleMobileMenu() {
+      const sidebar = document.querySelector('.vip-sidebar');
+      const overlay = document.querySelector('.sidebar-overlay');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
 
     // 🚨 Блокировка
     function blockUser(reason="Нарушение правил") {
@@ -912,6 +1138,11 @@ OpenXI4
         } else if (tool === 'generator') {
           document.getElementById('vip-problem-generator').style.display = 'grid';
         }
+
+        // На мобильных устройствах закрываем меню после выбора инструмента
+        if (window.innerWidth <= 768) {
+          toggleMobileMenu();
+        }
       }
       
       // Получение заголовка для инструмента
@@ -1043,7 +1274,7 @@ OpenXI4
         return steps;
       }
       
-      // Показ пошагового решения
+      // Показ пошагового решение
       function showSteps(steps) {
         const container = document.getElementById('vip-steps-container');
         container.innerHTML = '<h3>Пошаговое решение:</h3>';
@@ -1254,29 +1485,5 @@ OpenXI4
       addVIPMessage('Готов к работе! Вы можете решать сложные математические задачи, строить графики и многое другое.', 'bot');
     }
   </script>
-  <div style="height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:20px; background:linear-gradient(135deg,#000000,#000000); font-family:Arial,sans-serif;">
-
-  <!-- WhatsApp -->
-  <a href="https://wa.me/+998999100097" target="_blank"
-     style="display:inline-block; padding:16px 28px; font-size:18px; font-weight:bold; border-radius:14px; text-decoration:none; color:#04260f; background:#25D366; box-shadow:0 6px 16px rgba(0,0,0,0.4); transition:all .3s;">
-    💬 Связаться в WhatsApp
-  </a>
-
-  <!-- Click -->
-  <a href="https://my.click.uz/services/" target="_blank"
-     style="display:inline-block; padding:16px 28px; font-size:18px; font-weight:bold; border-radius:14px; text-decoration:none; color:white; background:#007bff; box-shadow:0 6px 16px rgba(0,0,0,0.4); transition:all .3s;">
-    💳 Оплатить через Click
-  </a>
-
-  <!-- PayMe -->
-  <a href="https://payme.uz/home" target="_blank"
-     style="display:inline-block; padding:16px 28px; font-size:18px; font-weight:bold; border-radius:14px; text-decoration:none; color:white; background:#673ab7; box-shadow:0 6px 16px rgba(0,0,0,0.4); transition:all .3s;">
-    💳 Оплатить через PayMe
-  </a>
-
-</div>
-<button><a href="https://asadbek470.github.io/support/">support</a></button>
-<button><a href="https://asadbek470.github.io/admin.com">adminPass</a></button>
 </body>
 </html>
-
