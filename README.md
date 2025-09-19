@@ -48,6 +48,8 @@ OpenXI4
   <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.24.1/plotly.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Добавляем Tesseract.js для распознавания текста с изображений -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 
   <style>
     /* СТИЛИ ОБЫЧНОГО РЕЖИМА */
@@ -491,6 +493,46 @@ OpenXI4
       margin-left: 10px;
     }
     
+    /* Стили для загрузки изображений */
+    .image-upload-container {
+      margin: 15px 0;
+      text-align: center;
+    }
+    
+    .image-preview {
+      max-width: 100%;
+      max-height: 200px;
+      margin-top: 10px;
+      display: none;
+      border-radius: 8px;
+      border: 2px solid var(--accent);
+    }
+    
+    .upload-btn {
+      background: linear-gradient(135deg, var(--accent) 0%, #007bff 100%);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .upload-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+    }
+    
+    .ocr-loading {
+      display: none;
+      text-align: center;
+      margin: 10px 0;
+      color: var(--accent);
+    }
+    
     /* МОБИЛЬНАЯ АДАПТАЦИЯ */
     @media (max-width: 900px) {
       .vip-container {
@@ -516,7 +558,7 @@ OpenXI4
       animation: pulse 2s infinite;
     }
     
-    /* МОБИЛЬНАЯ АДАПТАЦИЯ - ДОПОЛНИТЕЛЬНЫЕ СТИЛИ */
+    /* МОБИЛЬНАя АДАПТАЦИЯ - ДОПОЛНИТЕЛЬНЫЕ СТИЛИ */
     @media (max-width: 768px) {
       body {
         padding: 10px;
@@ -796,6 +838,18 @@ OpenXI4
             <button class="vip-tool-btn" onclick="insertSymbol('∂')">∂</button>
             <button class="vip-tool-btn" onclick="insertSymbol('²')">x²</button>
             <button class="vip-tool-btn" onclick="insertSymbol('³')">x³</button>
+          </div>
+          
+          <!-- Контейнер для загрузки изображений (добавлено) -->
+          <div class="image-upload-container">
+            <label for="math-image-upload" class="upload-btn">
+              <span>📷</span> Загрузить изображение с примером
+            </label>
+            <input type="file" id="math-image-upload" accept="image/*" capture="environment" style="display: none;">
+            <div class="ocr-loading" id="ocr-loading">
+              <p>Распознавание текста... <span class="vip-pulse">⏳</span></p>
+            </div>
+            <img id="image-preview" class="image-preview" alt="Предпросмотр загруженного изображения">
           </div>
           
           <div class="vip-chat-container" id="vip-chat-container">
@@ -1472,6 +1526,81 @@ OpenXI4
       window.showPremiumModal = function() {
         // В реальном приложении здесь было бы модальное окно
         addVIPMessage('XIAI Pro уже работает в premium-режиме! Все функции доступны без ограничений.', 'bot');
+      }
+      
+      // ========== УЛУЧШЕННАЯ ФУНКЦИЯ РАСПОЗНАВАНИЯ ИЗОБРАЖЕНИЙ ==========
+      // Обработчик для загрузки изображений
+      const imageUpload = document.getElementById('math-image-upload');
+      const ocrLoading = document.getElementById('ocr-loading');
+      const imagePreview = document.getElementById('image-preview');
+      
+      if (imageUpload) {
+        imageUpload.addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (!file) return;
+          
+          // Показываем превью изображения
+          imagePreview.style.display = 'block';
+          imagePreview.src = URL.createObjectURL(file);
+          
+          // Показываем индикатор загрузки
+          ocrLoading.style.display = 'block';
+          
+          // Используем Tesseract.js для распознавания текста
+          Tesseract.recognize(
+            file,
+            'eng', // Используем только английский для лучшего распознавания математики
+            { 
+              logger: m => console.log(m),
+              // Более специфичные настройки для математических выражений
+              tessedit_pageseg_mode: Tesseract.PSM.SINGLE_BLOCK,
+              tessedit_char_whitelist: '0123456789+-×÷=(){}[].,|/\\*^%$#@!?&abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            }
+          ).then(({ data: { text } }) => {
+            // Обрабатываем распознанный текст
+            let processedText = preprocessOCRText(text);
+            
+            // Вставляем распознанный текст в поле ввода
+            document.getElementById('math-input').value = processedText;
+            
+            // Скрываем индикатор загрузки
+            ocrLoading.style.display = 'none';
+            
+            // Показываем пользователю что было распознано
+            addVIPMessage(`Распознано: ${processedText}`, 'bot');
+            
+            // Автоматически решаем пример
+            setTimeout(solveMath, 500);
+          }).catch(err => {
+            console.error('Ошибка распознавания:', err);
+            ocrLoading.style.display = 'none';
+            addVIPMessage('Не удалось распознать текст на изображении. Попробуйте другое изображение или введите выражение вручную.', 'bot');
+          });
+        });
+      }
+      
+      // Функция предварительной обработки распознанного текста
+      function preprocessOCRText(text) {
+        // Удаляем лишние пробелы и символы
+        let processed = text.trim();
+        
+        // Заменяем commonly misrecognized characters
+        processed = processed
+          .replace(/[oO]/g, '0') // иногда '0' распознается как 'o' или 'O'
+          .replace(/[lI]/g, '1') // '1' как 'I' или 'l'
+          .replace(/[zZ]/g, '2') // '2' как 'Z'
+          .replace(/[а-яА-Я]/g, '') // удаляем русские буквы
+          .replace(/[xх×]/gi, '*')
+          .replace(/[÷:]/gi, '/')
+          .replace(/\s+/g, '') // удаляем все пробелы
+          .replace(/[^0-9+\-*/().^π√]/g, ''); // оставляем только математические символы
+        
+        // Улучшаем распознавание сложных выражений
+        processed = processed.replace(/(\d)([a-zA-Z])/g, '$1*$2'); // добавляем * между цифрами и буквами
+        processed = processed.replace(/([a-zA-Z])(\d)/g, '$1*$2'); // добавляем * между буквами и цифрами
+        processed = processed.replace(/(\))(\()/g, '$1*$2'); // добавляем * между скобками
+        
+        return processed;
       }
       
       // Инициализация VIP-режима при загрузке
