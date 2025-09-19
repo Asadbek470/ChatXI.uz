@@ -7,48 +7,12 @@ OpenXI4
   <meta charset="UTF-8">
   <title>XIAI — Математический Ассистент</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <div style="max-width:600px; margin:20px auto; padding:20px; background:#f9fafb; border-radius:20px; box-shadow:0 4px 12px rgba(0,0,0,0.1); font-family:Arial, sans-serif;">
-
-  <h2 style="text-align:center; color:#1e3a8a;">✨ Что нового в OpenXI & AIChat?</h2>
-  <p style="font-size:16px; line-height:1.6; color:#374151;">
-    Мы обновили проект и добавили много интересных возможностей! Теперь работать и изучать математику стало ещё удобнее и интереснее.
-  </p>
-
-  <h3 style="color:#111827; margin-top:20px;">🔥 Новое обновление:</h3>
-  <ul style="color:#374151; font-size:15px; line-height:1.6;">
-    <li>🧮 Улучшенные математические решения с пошаговыми объяснениями</li>
-    <li>⚡ Быстрые ответы в AIChat</li>
-    <li>📊 Новые графики и визуализация формул</li>
-    <li>🌐 Более удобный интерфейс и современный дизайн</li>
-  </ul>
-
-  <h3 style="color:#111827; margin-top:20px;">👑 VIP-режим</h3>
-  <p style="font-size:16px; line-height:1.6; color:#374151;">
-    Теперь доступен <b>VIP-режим</b> — расширенный набор функций для тех, кто хочет максимальный комфорт:
-  </p>
-  <ul style="color:#374151; font-size:15px; line-height:1.6;">
-    <li>🚀 Мгновенные решения без ограничений</li>
-    <li>📖 Расширенные объяснения и примеры</li>
-    <li>🎨 Персонализация интерфейса</li>
-    <li>🔔 Приоритетная поддержка</li>
-    <li>💡 Секретные фишки только для VIP</li>
-  </ul>
-
-  <div style="margin-top:20px; padding:15px; background:#e0f2fe; border-radius:12px; text-align:center;">
-    <p style="font-size:18px; color:#0c4a6e; font-weight:bold;">
-      Стоимость подписки — всего <span style="color:#0284c7;">$1 в месяц</span> 💎
-    </p>
-  </div>
-
-</div>
-
   
-  <!-- Подключаем необходимые библиотеки для VIP-режима -->
+  <!-- Подключаем необходимые библиотеки -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.24.1/plotly.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <!-- Добавляем Tesseract.js для распознавания текста с изображений -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 
   <style>
@@ -533,6 +497,20 @@ OpenXI4
       color: var(--accent);
     }
     
+    .ocr-correction {
+      margin-top: 10px;
+      display: none;
+    }
+    
+    .ocr-correction input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid var(--accent);
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--light);
+    }
+    
     /* МОБИЛЬНАЯ АДАПТАЦИЯ */
     @media (max-width: 900px) {
       .vip-container {
@@ -558,7 +536,7 @@ OpenXI4
       animation: pulse 2s infinite;
     }
     
-    /* МОБИЛЬНАя АДАПТАЦИЯ - ДОПОЛНИТЕЛЬНЫЕ СТИЛИ */
+    /* МОБИЛЬНАЯ АДАПТАЦИЯ - ДОПОЛНИТЕЛЬНЫЕ СТИЛИ */
     @media (max-width: 768px) {
       body {
         padding: 10px;
@@ -576,11 +554,11 @@ OpenXI4
       
       textarea {
         height: 100px;
-        font-size: 16px; /* Увеличиваем для удобства на мобильных */
+        font-size: 16px;
       }
       
       button {
-        padding: 12px 18px; /* Увеличиваем кнопки для удобства нажатия */
+        padding: 12px 18px;
         font-size: 16px;
       }
       
@@ -610,7 +588,7 @@ OpenXI4
       
       .vip-input-group input {
         padding: 14px;
-        font-size: 16px; /* Увеличиваем размер шрифта для мобильных */
+        font-size: 16px;
       }
       
       .vip-chat-container {
@@ -618,7 +596,7 @@ OpenXI4
       }
       
       .vip-message {
-        max-width: 90%; /* Сообщения занимают больше места на мобильных */
+        max-width: 90%;
         font-size: 15px;
         padding: 12px;
       }
@@ -656,7 +634,6 @@ OpenXI4
         padding: 8px;
       }
       
-      /* Адаптация кнопок оплаты */
       .payment-buttons {
         flex-direction: column;
         gap: 15px;
@@ -668,7 +645,6 @@ OpenXI4
         box-sizing: border-box;
       }
       
-      /* Улучшение для мобильного меню */
       .mobile-menu-toggle {
         display: block;
         position: fixed;
@@ -687,7 +663,6 @@ OpenXI4
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       }
       
-      /* Адаптация VIP-сайдбара для мобильных */
       .vip-sidebar {
         position: fixed;
         top: 0;
@@ -719,7 +694,6 @@ OpenXI4
       }
     }
     
-    /* Стили для экранов больше 768px */
     @media (min-width: 769px) {
       .mobile-menu-toggle,
       .sidebar-overlay {
@@ -727,7 +701,6 @@ OpenXI4
       }
     }
     
-    /* Улучшения для очень маленьких экранов */
     @media (max-width: 360px) {
       .vip-title {
         font-size: 3rem;
@@ -781,7 +754,7 @@ OpenXI4
     <div id="blocker">
       <div class="panel">
         <h1>🚫 Доступ заблокирован</h1>
-        <p>Вы нарушили правила (мат, спам или хакерская атака).</p>
+        <p>Вы нарули правила (мат, спам или хакерская атака).</p>
         <p><b>Только администратор может разблокировать сайт.</b></p>
         <input type="password" id="adminPass" placeholder="Введите пароль">
         <br>
@@ -840,7 +813,7 @@ OpenXI4
             <button class="vip-tool-btn" onclick="insertSymbol('³')">x³</button>
           </div>
           
-          <!-- Контейнер для загрузки изображений (добавлено) -->
+          <!-- Контейнер для загрузки изображений -->
           <div class="image-upload-container">
             <label for="math-image-upload" class="upload-btn">
               <span>📷</span> Загрузить изображение с примером
@@ -850,6 +823,13 @@ OpenXI4
               <p>Распознавание текста... <span class="vip-pulse">⏳</span></p>
             </div>
             <img id="image-preview" class="image-preview" alt="Предпросмотр загруженного изображения">
+            
+            <!-- Поле для ручной корректировки -->
+            <div class="ocr-correction" id="ocr-correction">
+              <p>Проверьте и откорректируйте распознанный текст:</p>
+              <input type="text" id="ocr-corrected-text" placeholder="Исправьте распознанный текст здесь...">
+              <button class="vip-btn vip-btn-primary" onclick="useCorrectedText()">Использовать исправленный текст</button>
+            </div>
           </div>
           
           <div class="vip-chat-container" id="vip-chat-container">
@@ -905,7 +885,7 @@ OpenXI4
     <div class="vip-title">OpenXI.US</div>
   </div>
 
-  <!-- Кнопки оплаты с адаптацией для мобильных -->
+  <!-- Кнопки оплаты -->
   <div style="height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:20px; background:linear-gradient(135deg,#000000,#000000); font-family:Arial,sans-serif; padding: 20px; box-sizing: border-box;" class="payment-buttons">
 
     <!-- WhatsApp -->
@@ -1097,7 +1077,7 @@ OpenXI4
       recognition.onerror = function(event) {
         console.error('Ошибка распознавания голоса:', event.error);
         micButton.classList.remove('listening');
-        userInput.placeholder = "Напиши пример или нажми микрофон...";
+        userInput.placeholder = "Напиш пример или нажми микрофон...";
         
         if (event.error === 'not-allowed') {
           appendMessage("bot", "Разрешите доступ к микрофону для голосового ввода");
@@ -1106,7 +1086,7 @@ OpenXI4
 
       recognition.onend = function() {
         micButton.classList.remove('listening');
-        userInput.placeholder = "Напиши пример или нажми микрофон...";
+        userInput.placeholder = "Напиш пример или нажми микрофон...";
       };
 
       micButton.addEventListener('click', () => {
@@ -1119,13 +1099,13 @@ OpenXI4
           recognition.start();
         } catch (error) {
           console.error('Ошибка запуска распознавания:', error);
-          appendMessage("bot", "Ошибка доступа к микрофона. Проверьте разрешения браузера.");
+          appendMessage("bot", "Ошибка доступа к микрофону. Проверьте разрешения браузера.");
         }
       });
     } else {
       // Браузер не поддерживает распознавание речи
       micButton.style.display = 'none';
-      userInput.placeholder = "Напиши пример...";
+      userInput.placeholder = "Напиш пример...";
       appendMessage("bot", "Ваш браузер не поддерживает голосовой ввод");
     }
 
@@ -1171,7 +1151,7 @@ OpenXI4
       // Текущее состояние приложения
       const appState = {
         activeTool: 'calculator',
-        isPremium: true, // Для демонстрации все функции доступны
+        isPremium: true,
         history: [],
         stepByStepSolutions: true
       };
@@ -1294,7 +1274,6 @@ OpenXI4
       
       // Генерация пошагового решения
       function generateSteps(expr) {
-        // Это упрощенная реализация для демонстрации
         const steps = [];
         
         try {
@@ -1518,13 +1497,11 @@ OpenXI4
       
       // Экспорт в PDF
       window.exportToPDF = function() {
-        // В реальном приложении здесь был бы код для экспорта
         addVIPMessage('Функция экспорта в PDF активирована. В premium-версии эта функция доступна для всех ваших решений.', 'bot');
       }
       
       // Показ модального окна premium
       window.showPremiumModal = function() {
-        // В реальном приложении здесь было бы модальное окно
         addVIPMessage('XIAI Pro уже работает в premium-режиме! Все функции доступны без ограничений.', 'bot');
       }
       
@@ -1533,6 +1510,8 @@ OpenXI4
       const imageUpload = document.getElementById('math-image-upload');
       const ocrLoading = document.getElementById('ocr-loading');
       const imagePreview = document.getElementById('image-preview');
+      const ocrCorrection = document.getElementById('ocr-correction');
+      const ocrCorrectedText = document.getElementById('ocr-corrected-text');
       
       if (imageUpload) {
         imageUpload.addEventListener('change', function(e) {
@@ -1545,6 +1524,7 @@ OpenXI4
           
           // Показываем индикатор загрузки
           ocrLoading.style.display = 'block';
+          ocrCorrection.style.display = 'none';
           
           // Используем Tesseract.js для распознавания текста
           Tesseract.recognize(
@@ -1552,7 +1532,7 @@ OpenXI4
             'eng', // Используем только английский для лучшего распознавания математики
             { 
               logger: m => console.log(m),
-              // Более специфичные настройки для математических выражений
+              // Специфичные настройки для математических выражений
               tessedit_pageseg_mode: Tesseract.PSM.SINGLE_BLOCK,
               tessedit_char_whitelist: '0123456789+-×÷=(){}[].,|/\\*^%$#@!?&abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
             }
@@ -1560,23 +1540,36 @@ OpenXI4
             // Обрабатываем распознанный текст
             let processedText = preprocessOCRText(text);
             
-            // Вставляем распознанный текст в поле ввода
-            document.getElementById('math-input').value = processedText;
-            
             // Скрываем индикатор загрузки
             ocrLoading.style.display = 'none';
             
-            // Показываем пользователю что было распознано
-            addVIPMessage(`Распознано: ${processedText}`, 'bot');
+            // Показываем поле для корректировки
+            ocrCorrection.style.display = 'block';
+            ocrCorrectedText.value = processedText;
             
-            // Автоматически решаем пример
-            setTimeout(solveMath, 500);
+            // Показываем пользователю что было распознано
+            addVIPMessage(`Распознано: ${processedText}. Проверьте и откорректируйте при необходимости.`, 'bot');
           }).catch(err => {
             console.error('Ошибка распознавания:', err);
             ocrLoading.style.display = 'none';
             addVIPMessage('Не удалось распознать текст на изображении. Попробуйте другое изображение или введите выражение вручную.', 'bot');
           });
         });
+      }
+      
+      // Функция использования исправленного текста
+      window.useCorrectedText = function() {
+        const correctedText = ocrCorrectedText.value.trim();
+        if (!correctedText) return;
+        
+        // Вставляем исправленный текст в поле ввода
+        document.getElementById('math-input').value = correctedText;
+        
+        // Скрываем поле корректировки
+        ocrCorrection.style.display = 'none';
+        
+        // Автоматически решаем пример
+        solveMath();
       }
       
       // Функция предварительной обработки распознанного текста
