@@ -511,6 +511,66 @@ OpenXI4
       color: var(--light);
     }
     
+    /* Стили для языкового переключателя */
+    .language-selector {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .language-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--light);
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+    
+    .language-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .language-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: rgba(42, 45, 67, 0.95);
+      border-radius: 5px;
+      padding: 10px 0;
+      min-width: 150px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      display: none;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+    
+    .language-dropdown.active {
+      display: block;
+    }
+    
+    .language-option {
+      padding: 8px 15px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .language-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .language-flag {
+      width: 20px;
+      height: 15px;
+      border-radius: 2px;
+    }
+    
     /* МОБИЛЬНАЯ АДАПТАЦИЯ */
     @media (max-width: 900px) {
       .vip-container {
@@ -692,6 +752,15 @@ OpenXI4
       .sidebar-overlay.active {
         display: block;
       }
+      
+      .language-dropdown {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 300px;
+      }
     }
     
     @media (min-width: 769px) {
@@ -772,21 +841,55 @@ OpenXI4
           <h1>XIAI Pro <span class="vip-badge">VIP</span></h1>
         </div>
         <div class="vip-user-controls">
-          <button class="vip-btn vip-btn-primary" onclick="exportToPDF()">Экспорт в PDF</button>
-          <button class="vip-btn vip-btn-vip" onclick="showPremiumModal()">Premium</button>
+          <!-- Языковой переключатель -->
+          <div class="language-selector">
+            <div class="language-btn" onclick="toggleLanguageDropdown()">
+              <span id="current-language">🌐 Русский</span>
+              <span>▼</span>
+            </div>
+            <div class="language-dropdown" id="language-dropdown">
+              <div class="language-option" onclick="setLanguage('ru')">
+                <span class="language-flag" style="background: linear-gradient(to bottom, #0039a6 33%, #fff 33%, #fff 66%, #d52b1e 66%)"></span>
+                Русский
+              </div>
+              <div class="language-option" onclick="setLanguage('uz')">
+                <span class="language-flag" style="background: linear-gradient(to bottom, #1eb53a 25%, #0099b5 25%, #0099b5 50%, #ce1126 50%, #ce1126 75%, #fff 75%)"></span>
+                O'zbek
+              </div>
+              <div class="language-option" onclick="setLanguage('en')">
+                <span class="language-flag" style="background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 60 30\" width=\"20\" height=\"10\"><clipPath id=\"a\"><path d=\"M0 0v30h60V0z\"/></clipPath><clipPath id=\"b\"><path d=\"M30 15h30v15zv15H0zH0V0zV0h30z\"/></clipPath><g clip-path=\"url(#a)\"><path d=\"M0 0v30h60V0z\" fill=\"#012169\"/><path d=\"M0 0l60 30m0-30L0 30\" stroke=\"#fff\" stroke-width=\"6\"/><path d=\"M0 0l60 30m0-30L0 30\" clip-path=\"url(#b)\" stroke=\"#C8102E\" stroke-width=\"4\"/><path d=\"M30 0v30M0 15h60\" stroke=\"#fff\" stroke-width=\"10\"/><path d=\"M30 0v30M0 15h60\" stroke=\"#C8102E\" stroke-width=\"6\"/></g></svg>')"></span>
+                English
+              </div>
+              <div class="language-option" onclick="setLanguage('es')">
+                <span class="language-flag" style="background: linear-gradient(to right, #aa151b 25%, #f1bf00 25%, #f1bf00 75%, #aa151b 75%)"></span>
+                Español
+              </div>
+              <div class="language-option" onclick="setLanguage('it')">
+                <span class="language-flag" style="background: linear-gradient(to right, #009246 33%, #fff 33%, #fff 66%, #ce2b37 66%)"></span>
+                Italiano
+              </div>
+              <div class="language-option" onclick="setLanguage('de')">
+                <span class="language-flag" style="background: linear-gradient(to bottom, #000 33%, #dd0000 33%, #dd0000 66%, #ffce00 66%)"></span>
+                Deutsch
+              </div>
+            </div>
+          </div>
+          
+          <button class="vip-btn vip-btn-primary" onclick="exportToPDF()" id="export-pdf-btn">Экспорт в PDF</button>
+          <button class="vip-btn vip-btn-vip" onclick="showPremiumModal()" id="premium-btn">Premium</button>
         </div>
       </header>
       
       <aside class="vip-sidebar">
-        <h2>Инструменты</h2>
+        <h2 id="tools-title">Инструменты</h2>
         <ul class="vip-sidebar-menu">
-          <li><a href="#" onclick="setActiveTool('calculator')">Калькулятор</a></li>
-          <li><a href="#" onclick="setActiveTool('graph')">Построитель графиков</a></li>
-          <li><a href="#" onclick="setActiveTool('equation')">Решение уравнений</a></li>
-          <li><a href="#" onclick="setActiveTool('derivative')">Производные</a></li>
-          <li><a href="#" onclick="setActiveTool('integral')">Интегралы</a></li>
-          <li><a href="#" onclick="setActiveTool('matrix')">Матрицы</a></li>
-          <li><a href="#" onclick="setActiveTool('generator')">Генератор задач</a></li>
+          <li><a href="#" onclick="setActiveTool('calculator')" id="calculator-btn">Калькулятор</a></li>
+          <li><a href="#" onclick="setActiveTool('graph')" id="graph-btn">Построитель графиков</a></li>
+          <li><a href="#" onclick="setActiveTool('equation')" id="equation-btn">Решение уравнений</a></li>
+          <li><a href="#" onclick="setActiveTool('derivative')" id="derivative-btn">Производные</a></li>
+          <li><a href="#" onclick="setActiveTool('integral')" id="integral-btn">Интегралы</a></li>
+          <li><a href="#" onclick="setActiveTool('matrix')" id="matrix-btn">Матрицы</a></li>
+          <li><a href="#" onclick="setActiveTool('generator')" id="generator-btn">Генератор задач</a></li>
         </ul>
       </aside>
       
@@ -799,7 +902,7 @@ OpenXI4
           
           <div class="vip-input-group">
             <input type="text" id="math-input" placeholder="Введите математическое выражение или вопрос..." onkeypress="handleKeyPress(event)">
-            <button class="vip-btn vip-btn-primary" onclick="solveMath()">Решить</button>
+            <button class="vip-btn vip-btn-primary" onclick="solveMath()" id="solve-btn">Решить</button>
           </div>
           
           <div class="vip-toolbar">
@@ -815,25 +918,25 @@ OpenXI4
           
           <!-- Контейнер для загрузки изображений -->
           <div class="image-upload-container">
-            <label for="math-image-upload" class="upload-btn">
+            <label for="math-image-upload" class="upload-btn" id="upload-image-btn">
               <span>📷</span> Загрузить изображение с примером
             </label>
             <input type="file" id="math-image-upload" accept="image/*" capture="environment" style="display: none;">
             <div class="ocr-loading" id="ocr-loading">
-              <p>Распознавание текста... <span class="vip-pulse">⏳</span></p>
+              <p id="ocr-loading-text">Распознавание текста... <span class="vip-pulse">⏳</span></p>
             </div>
             <img id="image-preview" class="image-preview" alt="Предпросмотр загруженного изображения">
             
             <!-- Поле для ручной корректировки -->
             <div class="ocr-correction" id="ocr-correction">
-              <p>Проверьте и откорректируйте распознанный текст:</p>
+              <p id="ocr-correction-text">Проверьте и откорректируйте распознанный текст:</p>
               <input type="text" id="ocr-corrected-text" placeholder="Исправьте распознанный текст здесь...">
-              <button class="vip-btn vip-btn-primary" onclick="useCorrectedText()">Использовать исправленный текст</button>
+              <button class="vip-btn vip-btn-primary" onclick="useCorrectedText()" id="use-corrected-btn">Использовать исправленный текст</button>
             </div>
           </div>
           
           <div class="vip-chat-container" id="vip-chat-container">
-            <div class="vip-message vip-bot-message">
+            <div class="vip-message vip-bot-message" id="welcome-message">
               Добро пожаловать в XIAI Pro! Я ваш персональный математический ассистент. 
               Чем могу помочь? Вы можете решать примеры, строить графики, находить производные и многое другое.
             </div>
@@ -844,23 +947,23 @@ OpenXI4
           
           <div id="vip-problem-generator" class="vip-problem-generator" style="display: none;">
             <div class="vip-problem-card">
-              <h3>Арифметика</h3>
-              <button class="vip-btn vip-btn-primary" onclick="generateProblem('arithmetic')">Сгенерировать задачу</button>
+              <h3 id="arithmetic-title">Арифметика</h3>
+              <button class="vip-btn vip-btn-primary" onclick="generateProblem('arithmetic')" id="generate-arithmetic-btn">Сгенерировать задачу</button>
               <p id="arithmetic-problem"></p>
             </div>
             <div class="vip-problem-card">
-              <h3>Алгебра</h3>
-              <button class="vip-btn vip-btn-primary" onclick="generateProblem('algebra')">Сгенерировать задачу</button>
+              <h3 id="algebra-title">Алгебра</h3>
+              <button class="vip-btn vip-btn-primary" onclick="generateProblem('algebra')" id="generate-algebra-btn">Сгенерировать задачу</button>
               <p id="algebra-problem"></p>
             </div>
             <div class="vip-problem-card">
-              <h3>Геометрия</h3>
-              <button class="vip-btn vip-btn-primary" onclick="generateProblem('geometry')">Сгенерировать задачу</button>
+              <h3 id="geometry-title">Геометрия</h3>
+              <button class="vip-btn vip-btn-primary" onclick="generateProblem('geometry')" id="generate-geometry-btn">Сгенерировать задачу</button>
               <p id="geometry-problem"></p>
             </div>
             <div class="vip-problem-card">
-              <h3>Высшая математика</h3>
-              <button class="vip-btn vip-btn-primary" onclick="generateProblem('advanced')">Сгенерировать задачу</button>
+              <h3 id="advanced-title">Высшая математика</h3>
+              <button class="vip-btn vip-btn-primary" onclick="generateProblem('advanced')" id="generate-advanced-btn">Сгенерировать задачу</button>
               <p id="advanced-problem"></p>
             </div>
           </div>
@@ -868,11 +971,11 @@ OpenXI4
         
         <div class="vip-card">
           <div class="vip-card-header">
-            <h2>Проверка решений</h2>
+            <h2 id="verification-title">Проверка решений</h2>
           </div>
           <div class="vip-input-group">
             <input type="text" id="user-solution" placeholder="Введите ваше решение для проверки...">
-            <button class="vip-btn vip-btn-primary" onclick="checkSolution()">Проверить</button>
+            <button class="vip-btn vip-btn-primary" onclick="checkSolution()" id="check-solution-btn">Проверить</button>
           </div>
           <div id="verification-result"></div>
         </div>
@@ -1153,9 +1256,292 @@ OpenXI4
         activeTool: 'calculator',
         isPremium: true,
         history: [],
-        stepByStepSolutions: true
+        stepByStepSolutions: true,
+        currentLanguage: 'ru'
       };
       
+      // ========== МНОГОЯЗЫЧНАЯ ПОДДЕРЖКА ==========
+      const translations = {
+        ru: {
+          // Интерфейс
+          'current-language': '🌐 Русский',
+          'active-tool-title': 'Математический ассистент',
+          'tools-title': 'Инструменты',
+          'calculator-btn': 'Калькулятор',
+          'graph-btn': 'Построитель графиков',
+          'equation-btn': 'Решение уравнений',
+          'derivative-btn': 'Производные',
+          'integral-btn': 'Интегралы',
+          'matrix-btn': 'Матрицы',
+          'generator-btn': 'Генератор задач',
+          'solve-btn': 'Решить',
+          'export-pdf-btn': 'Экспорт в PDF',
+          'premium-btn': 'Premium',
+          'upload-image-btn': '📷 Загрузить изображение с примером',
+          'use-corrected-btn': 'Использовать исправленный текст',
+          'check-solution-btn': 'Проверить',
+          'verification-title': 'Проверка решений',
+          'arithmetic-title': 'Арифметика',
+          'algebra-title': 'Алгебра',
+          'geometry-title': 'Геометрия',
+          'advanced-title': 'Высшая математика',
+          'generate-arithmetic-btn': 'Сгенерировать задачу',
+          'generate-algebra-btn': 'Сгенерировать задачу',
+          'generate-geometry-btn': 'Сгенерировать задачу',
+          'generate-advanced-btn': 'Сгенерировать задачу',
+          
+          // Сообщения
+          'welcome-message': 'Добро пожаловать в XIAI Pro! Я ваш персональный математический ассистент. Чем могу помочь?',
+          'ocr-loading-text': 'Распознавание текста... ⏳',
+          'ocr-correction-text': 'Проверьте и откорректируйте распознанный текст:',
+          
+          // Плейсхолдеры
+          'math-input-placeholder': 'Введите математическое выражение или вопрос...',
+          'user-solution-placeholder': 'Введите ваше решение для проверки...',
+          'ocr-corrected-placeholder': 'Исправьте распознанный текст здесь...'
+        },
+        uz: {
+          // Интерфейс
+          'current-language': '🌐 O\'zbek',
+          'active-tool-title': 'Matematik yordamchi',
+          'tools-title': 'Vositalar',
+          'calculator-btn': 'Kalkulyator',
+          'graph-btn': 'Grafik qurish',
+          'equation-btn': 'Tenglama yechish',
+          'derivative-btn': 'Hosila',
+          'integral-btn': 'Integral',
+          'matrix-btn': 'Matritsalar',
+          'generator-btn': 'Masala generatori',
+          'solve-btn': 'Yechish',
+          'export-pdf-btn': 'PDF ga eksport',
+          'premium-btn': 'Premium',
+          'upload-image-btn': '📷 Misol bilan rasm yuklash',
+          'use-corrected-btn': 'Tuzatilgan matndan foydalanish',
+          'check-solution-btn': 'Tekshirish',
+          'verification-title': 'Yechimlarni tekshirish',
+          'arithmetic-title': 'Arifmetika',
+          'algebra-title': 'Algebra',
+          'geometry-title': 'Geometriya',
+          'advanced-title': 'Yuqori matematika',
+          'generate-arithmetic-btn': 'Masala yaratish',
+          'generate-algebra-btn': 'Masala yaratish',
+          'generate-geometry-btn': 'Masala yaratish',
+          'generate-advanced-btn': 'Masala yaratish',
+          
+          // Сообщения
+          'welcome-message': 'XIAI Pro ga xush kelibsiz! Men sizning shaxsiy matematik yordamchingizman. Qanday yordam bera olaman?',
+          'ocr-loading-text': 'Matnni tanib olish... ⏳',
+          'ocr-correction-text': 'Tanib olingan matnni tekshiring va tuzating:',
+          
+          // Плейсхолдеры
+          'math-input-placeholder': 'Matematik ifoda yoki savol kiriting...',
+          'user-solution-placeholder': 'Tekshirish uchun yechimingizni kiriting...',
+          'ocr-corrected-placeholder': 'Tanib olingan matnni bu yerda tuzating...'
+        },
+        en: {
+          // Интерфейс
+          'current-language': '🌐 English',
+          'active-tool-title': 'Math Assistant',
+          'tools-title': 'Tools',
+          'calculator-btn': 'Calculator',
+          'graph-btn': 'Graph Builder',
+          'equation-btn': 'Equation Solver',
+          'derivative-btn': 'Derivatives',
+          'integral-btn': 'Integrals',
+          'matrix-btn': 'Matrices',
+          'generator-btn': 'Problem Generator',
+          'solve-btn': 'Solve',
+          'export-pdf-btn': 'Export to PDF',
+          'premium-btn': 'Premium',
+          'upload-image-btn': '📷 Upload image with example',
+          'use-corrected-btn': 'Use corrected text',
+          'check-solution-btn': 'Check',
+          'verification-title': 'Solution Verification',
+          'arithmetic-title': 'Arithmetic',
+          'algebra-title': 'Algebra',
+          'geometry-title': 'Geometry',
+          'advanced-title': 'Advanced Math',
+          'generate-arithmetic-btn': 'Generate Problem',
+          'generate-algebra-btn': 'Generate Problem',
+          'generate-geometry-btn': 'Generate Problem',
+          'generate-advanced-btn': 'Generate Problem',
+          
+          // Сообщения
+          'welcome-message': 'Welcome to XIAI Pro! I am your personal math assistant. How can I help you?',
+          'ocr-loading-text': 'Recognizing text... ⏳',
+          'ocr-correction-text': 'Check and correct the recognized text:',
+          
+          // Плейсхолдеры
+          'math-input-placeholder': 'Enter a mathematical expression or question...',
+          'user-solution-placeholder': 'Enter your solution for verification...',
+          'ocr-corrected-placeholder': 'Correct the recognized text here...'
+        },
+        es: {
+          // Интерфейс
+          'current-language': '🌐 Español',
+          'active-tool-title': 'Asistente matemático',
+          'tools-title': 'Herramientas',
+          'calculator-btn': 'Calculadora',
+          'graph-btn': 'Constructor de gráficos',
+          'equation-btn': 'Resolución de ecuaciones',
+          'derivative-btn': 'Derivadas',
+          'integral-btn': 'Integrales',
+          'matrix-btn': 'Matrices',
+          'generator-btn': 'Generador de problemas',
+          'solve-btn': 'Resolver',
+          'export-pdf-btn': 'Exportar a PDF',
+          'premium-btn': 'Premium',
+          'upload-image-btn': '📷 Subir imagen con ejemplo',
+          'use-corrected-btn': 'Usar texto corregido',
+          'check-solution-btn': 'Verificar',
+          'verification-title': 'Verificación de soluciones',
+          'arithmetic-title': 'Aritmética',
+          'algebra-title': 'Álgebra',
+          'geometry-title': 'Geometría',
+          'advanced-title': 'Matemáticas avanzadas',
+          'generate-arithmetic-btn': 'Generar problema',
+          'generate-algebra-btn': 'Generar problema',
+          'generate-geometry-btn': 'Generar problema',
+          'generate-advanced-btn': 'Generar problema',
+          
+          // Сообщения
+          'welcome-message': '¡Bienvenido a XIAI Pro! Soy tu asistente matemático personal. ¿Cómo puedo ayudarte?',
+          'ocr-loading-text': 'Reconociendo texto... ⏳',
+          'ocr-correction-text': 'Verifica y corrige el texto reconocido:',
+          
+          // Плейсхолдеры
+          'math-input-placeholder': 'Ingresa una expresión matemática o pregunta...',
+          'user-solution-placeholder': 'Ingresa tu solución para verificación...',
+          'ocr-corrected-placeholder': 'Corrige el texto reconocido aquí...'
+        },
+        it: {
+          // Интерфейс
+          'current-language': '🌐 Italiano',
+          'active-tool-title': 'Assistente matematico',
+          'tools-title': 'Strumenti',
+          'calculator-btn': 'Calcolatrice',
+          'graph-btn': 'Costruttore di grafici',
+          'equation-btn': 'Risoluzione equazioni',
+          'derivative-btn': 'Derivate',
+          'integral-btn': 'Integrali',
+          'matrix-btn': 'Matrici',
+          'generator-btn': 'Generatore di problemi',
+          'solve-btn': 'Risolvi',
+          'export-pdf-btn': 'Esporta in PDF',
+          'premium-btn': 'Premium',
+          'upload-image-btn': '📷 Carica immagine con esempio',
+          'use-corrected-btn': 'Usa testo corretto',
+          'check-solution-btn': 'Verifica',
+          'verification-title': 'Verifica soluzioni',
+          'arithmetic-title': 'Aritmetica',
+          'algebra-title': 'Algebra',
+          'geometry-title': 'Geometria',
+          'advanced-title': 'Matematica avanzata',
+          'generate-arithmetic-btn': 'Genera problema',
+          'generate-algebra-btn': 'Genera problema',
+          'generate-geometry-btn': 'Genera problema',
+          'generate-advanced-btn': 'Genera problema',
+          
+          // Сообщения
+          'welcome-message': 'Benvenuto in XIAI Pro! Sono il tuo assistente matematico personale. Come posso aiutarti?',
+          'ocr-loading-text': 'Riconoscimento testo... ⏳',
+          'ocr-correction-text': 'Controlla e correggi il testo riconosciuto:',
+          
+          // Плейсхолдеры
+          'math-input-placeholder': 'Inserisci un\'espressione matematica o domanda...',
+          'user-solution-placeholder': 'Inserisci la tua soluzione per la verifica...',
+          'ocr-corrected-placeholder': 'Correggi il testo riconosciuto qui...'
+        },
+        de: {
+          // Интерфейс
+          'current-language': '🌐 Deutsch',
+          'active-tool-title': 'Mathe-Assistent',
+          'tools-title': 'Werkzeuge',
+          'calculator-btn': 'Rechner',
+          'graph-btn': 'Grafikersteller',
+          'equation-btn': 'Gleichungslöser',
+          'derivative-btn': 'Ableitungen',
+          'integral-btn': 'Integrale',
+          'matrix-btn': 'Matrizen',
+          'generator-btn': 'Problemgenerator',
+          'solve-btn': 'Lösen',
+          'export-pdf-btn': 'Als PDF exportieren',
+          'premium-btn': 'Premium',
+          'upload-image-btn': '📷 Bild mit Beispiel hochladen',
+          'use-corrected-btn': 'Korrigierten Text verwenden',
+          'check-solution-btn': 'Überprüfen',
+          'verification-title': 'Lösungsüberprüfung',
+          'arithmetic-title': 'Arithmetik',
+          'algebra-title': 'Algebra',
+          'geometry-title': 'Geometrie',
+          'advanced-title': 'Höhere Mathematik',
+          'generate-arithmetic-btn': 'Problem generieren',
+          'generate-algebra-btn': 'Problem generieren',
+          'generate-geometry-btn': 'Problem generieren',
+          'generate-advanced-btn': 'Problem generieren',
+          
+          // Сообщения
+          'welcome-message': 'Willkommen bei XIAI Pro! Ich bin Ihr persönlicher Mathe-Assistent. Wie kann ich Ihnen helfen?',
+          'ocr-loading-text': 'Texterkennung... ⏳',
+          'ocr-correction-text': 'Überprüfen und korrigieren Sie den erkannten Text:',
+          
+          // Плейсхолдеры
+          'math-input-placeholder': 'Geben Sie einen mathematischen Ausdruck oder eine Frage ein...',
+          'user-solution-placeholder': 'Geben Sie Ihre Lösung zur Überprüfung ein...',
+          'ocr-corrected-placeholder': 'Korrigieren Sie den erkannten Text hier...'
+        }
+      };
+
+      // Функция установки языка
+      window.setLanguage = function(lang) {
+        appState.currentLanguage = lang;
+        localStorage.setItem('vip-language', lang);
+        
+        // Обновляем интерфейс
+        updateInterfaceLanguage(lang);
+        
+        // Закрываем выпадающее меню
+        document.getElementById('language-dropdown').classList.remove('active');
+      };
+
+      // Функция обновления языка интерфейса
+      function updateInterfaceLanguage(lang) {
+        const langData = translations[lang] || translations.ru;
+        
+        // Обновляем все элементы с data-lang-key
+        document.querySelectorAll('[id]').forEach(element => {
+          const key = element.id;
+          if (langData[key]) {
+            if (element.tagName === 'INPUT' && element.type === 'text') {
+              element.placeholder = langData[key];
+            } else {
+              element.textContent = langData[key];
+            }
+          }
+        });
+        
+        // Обновляем текущий язык в переключателе
+        document.getElementById('current-language').textContent = langData['current-language'];
+      }
+
+      // Функция переключения выпадающего меню языков
+      window.toggleLanguageDropdown = function() {
+        document.getElementById('language-dropdown').classList.toggle('active');
+      };
+
+      // Закрытие выпадающего меню при клике вне его
+      document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('language-dropdown');
+        const button = document.querySelector('.language-btn');
+        if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+          dropdown.classList.remove('active');
+        }
+      });
+
+      // Загружаем сохраненный язык
+      const savedLanguage = localStorage.getItem('vip-language') || 'ru';
+      setLanguage(savedLanguage);
+
       // Установка активного инструмента
       window.setActiveTool = function(tool) {
         appState.activeTool = tool;
