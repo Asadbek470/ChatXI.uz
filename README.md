@@ -1993,42 +1993,6 @@ OpenXI4
       addVIPMessage('Готов к работе! Вы можете решать сложные математические задачи, строить графики и многое другое.', 'bot');
     }
   </script>
-  <style>
-    :root {
-      --bg: #0b0c10;
-      --card: #111217;
-      --accent: #e63946;
-      --text: #e6e6e6;
-    }
-    html,body { height:100%; margin:0; font-family: Inter, Roboto, Arial, sans-serif; background:var(--bg); color:var(--text); }
-    #blocker {
-      position:fixed; inset:0; z-index:99999;
-      display:flex; align-items:center; justify-content:center;
-      background:linear-gradient(180deg, rgba(0,0,0,0.75), rgba(0,0,0,0.85));
-      backdrop-filter: blur(4px);
-    }
-    .panel {
-      width:min(920px, 96%);
-      background:linear-gradient(180deg, rgba(17,18,23,0.95), rgba(14,15,18,0.98));
-      padding:28px; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.6);
-      border:1px solid rgba(255,255,255,0.03);
-    }
-    h1 { margin:0 0 10px 0; font-size:24px; color:var(--accent); }
-    p { margin:0 0 14px 0; line-height:1.45; color:var(--text); opacity:0.95; }
-    hr { border:0; height:1px; background:rgba(255,255,255,0.03); margin:14px 0; }
-    .small { font-size:13px; opacity:0.8; }
-    .controls { display:flex; flex-direction:column; gap:10px; margin-top:14px; }
-    input[type="password"], input[type="text"]{
-      padding:10px 12px; border-radius:8px;
-      border:1px solid rgba(255,255,255,0.06);
-      background:transparent; color:var(--text);
-      outline:none; min-width:220px;
-    }
-    button { padding:10px 14px; border-radius:8px; border:0; cursor:pointer; background:var(--accent); color:white; font-weight:600; }
-    button.ghost { background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--text); }
-    .note { margin-top:10px; font-size:13px; opacity:0.8; }
-    #site-content { filter:blur(2px) grayscale(0.3); pointer-events:none; user-select:none; }
-  </style>
 </head>
 </body>
 </html>
