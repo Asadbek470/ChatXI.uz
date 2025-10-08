@@ -2030,30 +2030,5 @@ OpenXI4
     #site-content { filter:blur(2px) grayscale(0.3); pointer-events:none; user-select:none; }
   </style>
 </head>
-<body>
-  <div id="site-content" aria-hidden="true">
-    <h2 style="padding:20px; color: #ddd;">Твой сайт (скрыт пока)</h2>
-    <p style="padding:0 20px 40px 20px; color:#bbb;">Когда блок будет снят — пользователь увидит этот контент.</p>
-  </div>
-
-  <div id="blocker" role="alertdialog" aria-modal="true">
-    <div class="panel" role="document">
-      <h1>🚫 Доступ временно ограничен</h1>
-      <p><strong>Правило:</strong> в соответствии с правилами сайта — доступ закрыт для всех посетителей.</p>
-      <hr>
-      <p class="small">Введите секретный код и подтвердите, что вы человек:</p>
-
-      <!-- CAPTCHA -->
-      <div class="controls">
-        <p id="captchaText"></p>
-        <input id="captchaAnswer" type="text" placeholder="Решите пример" />
-        <input id="secret" type="password" placeholder="Введите секретный код" autocomplete="off" />
-        <button id="unlock">Разблокировать</button>
-        <button id="forceBan" class="ghost">Заблокировать навсегда (для этого браузера)</button>
-      </div>
-
-      <p class="note" id="msg" aria-live="polite"></p>
-    </div>
-  </div>
 </body>
 </html>
